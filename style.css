@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Next Gen Trader</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+    <header class="navbar">
+
+        <div class="menu-button" onclick="toggleMenu()">
+            ☰
+        </div>
+
+        <div class="logo">
+            <div class="logo-icon">📈</div>
+
+            <div>
+                <h1>NEXT GEN <span>TRADER</span></h1>
+                <p>LEARN • PRACTICE • TRADE • GROW</p>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="search">⌕</button>
+            <a href="#" class="login">Login</a>
+            <a href="#" class="signup">Sign Up</a>
+        </div>
+
+    </header>
+
+
+    <!-- ================= SIDE MENU ================= -->
+
+    <div id="sideMenu" class="side-menu">
+
+        <button class="close-button" onclick="toggleMenu()">×</button>
+
+        <h2>NEXT GEN TRADER</h2>
+
+        <a href="#">🏠 Home</a>
+        <a href="#">📚 Courses</a>
+        <a href="#">📝 My Applications</a>
+        <a href="#">🎓 My Learning</a>
+        <a href="#">📈 Markets</a>
+        <a href="#">🧠 Practice</a>
+        <a href="#">🏆 Achievements</a>
+        <a href="#">🔔 Notifications</a>
+        <a href="#">👤 Profile</a>
+        <a href="#">⚙️ Settings</a>
+        <a href="#">❓ Help</a>
+
+    </div>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="small-title">
+                EDUCATION BUILT FOR TOMORROW'S TRADERS
+            </p>
+
+            <h2>
+                MASTER THE MARKET.
+                <span>BUILD YOUR FUTURE.</span>
+            </h2>
+
+            <p class="description">
+                Learn trading through structured courses,
+                hands-on practice and real assessments.
+                Apply for courses, get accepted and develop
+                the skills needed to understand financial markets.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#" class="primary-button">
+                    Explore Courses →
+                </a>
+
+                <a href="#" class="secondary-button">
+                    ▶ How It Works
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-image">
+
+            <img src="assets/hero.png" alt="Next Gen Trader">
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <section class="features">
+
+        <div class="feature">
+
+            <div class="feature-icon">📚</div>
+
+            <h3>Quality Courses</h3>
+
+            <p>
+                Learn trading from basic concepts
+                to advanced market analysis.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">🎯</div>
+
+            <h3>Practical Practice</h3>
+
+            <p>
+                Practice using simulated market
+                environments and exercises.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">📊</div>
+
+            <h3>Expert Guidance</h3>
+
+            <p>
+                Learn through structured lessons,
+                assessments and guidance.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">🏆</div>
+
+            <h3>Your Success</h3>
+
+            <p>
+                Complete courses, demonstrate your
+                knowledge and earn certificates.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= POPULAR COURSES ================= -->
+
+    <section class="courses">
+
+        <div class="section-heading">
+
+            <p>START LEARNING</p>
+
+            <h2>Popular Trading Courses</h2>
+
+            <span>
+                Build your knowledge step by step.
+            </span>
+
+        </div>
+
+
+        <div class="course-container">
+
+            <div class="course-card">
+
+                <div class="course-image">📈</div>
+
+                <div class="course-content">
+
+                    <span class="level">BEGINNER</span>
+
+                    <h3>Trading Fundamentals</h3>
+
+                    <p>
+                        Understand markets, charts,
+                        orders and basic trading concepts.
+                    </p>
+
+                    <a href="#">
+                        View Course →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="course-card">
+
+                <div class="course-image">📊</div>
+
+                <div class="course-content">
+
+                    <span class="level">INTERMEDIATE</span>
+
+                    <h3>Technical Analysis</h3>
+
+                    <p>
+                        Learn how traders analyze charts,
+                        trends and market movements.
+                    </p>
+
+                    <a href="#">
+                        View Course →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="course-card">
+
+                <div class="course-image">🛡️</div>
+
+                <div class="course-content">
+
+                    <span class="level">ALL LEVELS</span>
+
+                    <h3>Risk Management</h3>
+
+                    <p>
+                        Understand risk, position sizing
+                        and responsible trading.
+                    </p>
+
+                    <a href="#">
+                        View Course →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section class="how-it-works">
+
+        <div class="section-heading">
+
+            <p>OUR PROCESS</p>
+
+            <h2>How Next Gen Trader Works</h2>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">01</div>
+
+                <h3>Create an Account</h3>
+
+                <p>
+                    Sign up and create your student profile.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">02</div>
+
+                <h3>Choose a Course</h3>
+
+                <p>
+                    Explore available courses and
+                    choose the one you want.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">03</div>
+
+                <h3>Apply</h3>
+
+                <p>
+                    Complete the course application
+                    and submit it.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">04</div>
+
+                <h3>Start Learning</h3>
+
+                <p>
+                    If accepted, access your course
+                    and begin learning.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FINAL CTA ================= -->
+
+    <section class="cta">
+
+        <h2>Ready to Start Your Trading Journey?</h2>
+
+        <p>
+            Build knowledge before taking financial risks.
+            Learn. Practice. Grow.
+        </p>
+
+        <a href="#" class="primary-button">
+            Create Your Account →
+        </a>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div>
+            <h2>NEXT GEN <span>TRADER</span></h2>
+
+            <p>
+                Learn • Practice • Grow
+            </p>
+        </div>
+
+        <p>
+            © 2026 Next Gen Trader. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
