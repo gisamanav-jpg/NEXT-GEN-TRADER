@@ -1,439 +1,315 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
-  <title>Next Gen Trader | Learn. Practice. Grow.</title>
+  <title>Next Gen Trader | Learn Smart Trading</title>
+
+  <!-- EmailJS library for contact-form delivery -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <style>
     :root {
       --bg: #07111f;
-      --panel: #101e30;
-      --panel2: #14263a;
-      --green: #00e6a7;
-      --text: #f4f8fc;
-      --muted: #a8b7c8;
-      --border: rgba(255,255,255,.11);
+      --panel: #101f31;
+      --panel2: #14273b;
+      --green: #26e6a0;
+      --text: #f4f7fb;
+      --muted: #a7b7c9;
+      --border: #26394e;
+      --danger: #ff8585;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
       line-height: 1.6;
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
+    button, input, textarea, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
 
-    button, a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    a {
-      color: var(--green);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    button {
-      cursor: pointer;
-    }
+    a { color: var(--green); }
 
     .topbar {
       position: sticky;
       top: 0;
       z-index: 100;
       min-height: 76px;
-      padding: 14px 5%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      background: rgba(7,17,31,.96);
+      gap: 16px;
+      padding: 12px 5%;
+      background: rgba(7, 17, 31, .97);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(14px);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      min-width: 0;
+      color: var(--text);
+      text-decoration: none;
+      font-size: clamp(15px, 2.4vw, 23px);
+      font-weight: 900;
+      letter-spacing: .4px;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
-    .brand-icon {
-      width: 39px;
-      height: 39px;
-      flex-shrink: 0;
+    .brand-mark {
       display: grid;
       place-items: center;
-      border-radius: 12px;
-      color: #06151a;
+      width: 38px;
+      height: 38px;
       background: var(--green);
-      font-weight: 900;
+      color: #07111f;
+      border-radius: 12px;
       font-size: 22px;
-    }
-
-    .brand-name {
-      color: white;
-      font-size: 17px;
-      font-weight: 900;
-      letter-spacing: .5px;
-      white-space: nowrap;
-    }
-
-    .brand-name span {
-      color: var(--green);
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
-    }
-
-    .menu-btn {
-      width: 43px;
-      height: 43px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      color: white;
-      background: var(--panel);
-      font-size: 25px;
-    }
-
-    .menu-btn:hover {
-      color: var(--green);
-      border-color: var(--green);
+      gap: 10px;
     }
 
     .btn {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       gap: 8px;
       padding: 11px 17px;
       border: 1px solid transparent;
-      border-radius: 9px;
-      font-weight: 700;
-      text-align: center;
-      transition: .2s ease;
+      border-radius: 10px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: .2s;
     }
 
+    .btn:hover { transform: translateY(-2px); }
+
     .btn-primary {
-      color: #04150f;
+      color: #07111f;
       background: var(--green);
     }
 
-    .btn-primary:hover {
-      background: #72ffd7;
-      text-decoration: none;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      color: white;
-      background: var(--panel2);
+    .btn-outline {
+      color: var(--text);
+      background: transparent;
       border-color: var(--border);
     }
 
-    .btn-secondary:hover {
-      border-color: var(--green);
-      text-decoration: none;
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 46px;
+      padding: 8px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 3px;
+      background: var(--green);
+      border-radius: 5px;
+    }
+
+    .menu-label {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .menu-backdrop {
+      position: fixed;
+      inset: 76px 0 0;
+      z-index: 90;
+      background: rgba(0, 0, 0, .48);
     }
 
     .side-menu {
-      display: none;
       position: fixed;
-      z-index: 120;
+      z-index: 95;
       top: 76px;
       right: 0;
-      width: min(340px, 88vw);
-      height: calc(100vh - 76px);
+      width: min(330px, 88vw);
+      height: calc(100dvh - 76px);
       overflow-y: auto;
       padding: 22px;
-      background: #0b1727;
+      background: #0c1b2c;
       border-left: 1px solid var(--border);
-      box-shadow: -15px 15px 45px rgba(0,0,0,.35);
+      box-shadow: -15px 10px 40px rgba(0, 0, 0, .3);
+      transform: translateX(105%);
+      visibility: hidden;
+      transition: transform .25s ease, visibility .25s;
     }
 
     .side-menu.open {
-      display: block;
+      transform: translateX(0);
+      visibility: visible;
     }
 
     .menu-heading {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      margin: 7px 0 14px;
-    }
-
-    .menu-link {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 13px 12px;
-      margin-bottom: 5px;
-      border: 1px solid transparent;
+      margin-bottom: 15px;
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-links button {
+      padding: 12px 14px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 9px;
-      color: #eaf2fa;
-      background: transparent;
       text-align: left;
-      font-size: 15px;
     }
 
-    .menu-link:hover,
-    .menu-link.active {
+    .menu-links button:hover,
+    .menu-links button.active {
       color: var(--green);
-      background: rgba(0,230,167,.08);
-      border-color: rgba(0,230,167,.18);
+      border-color: var(--green);
     }
 
-    .menu-link .menu-icon {
-      width: 23px;
-      text-align: center;
-    }
-
-    .menu-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 15px 0;
-    }
-
-    .menu-user {
+    .menu-note {
       color: var(--muted);
-      padding: 12px;
       font-size: 13px;
+      margin-top: 20px;
     }
 
-    main {
-      min-height: calc(100vh - 150px);
-    }
+    main { min-height: 70vh; }
 
     .page {
       display: none;
-      padding: 44px 5% 70px;
-      min-height: 75vh;
-      animation: pageIn .22s ease;
+      width: min(1150px, 90%);
+      margin: 0 auto;
+      padding: 44px 0 70px;
+      animation: appear .25s ease;
     }
 
-    .page.active {
-      display: block;
-    }
+    .page.active { display: block; }
 
-    @keyframes pageIn {
-      from { opacity: .35; transform: translateY(5px); }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
     .hero {
-      min-height: 510px;
+      min-height: 450px;
       display: flex;
       align-items: center;
+      padding: clamp(25px, 6vw, 70px);
       border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: clamp(25px, 6vw, 72px);
-      overflow: hidden;
+      border-radius: 24px;
       background:
-        linear-gradient(90deg, rgba(5,14,27,.97), rgba(5,14,27,.83) 55%, rgba(5,14,27,.42)),
-        url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1800&q=85")
+        linear-gradient(90deg, rgba(5, 14, 26, .96), rgba(5, 14, 26, .72)),
+        url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=85")
         center/cover;
     }
 
-    .hero-content {
-      max-width: 700px;
-    }
+    .hero-content { max-width: 680px; }
 
     .eyebrow {
-      display: inline-block;
-      padding: 7px 12px;
-      border: 1px solid rgba(0,230,167,.3);
-      border-radius: 50px;
       color: var(--green);
-      background: rgba(0,230,167,.08);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      margin-bottom: 23px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    h1 {
-      font-size: clamp(36px, 6vw, 67px);
-      line-height: 1.08;
-      letter-spacing: -1.5px;
-      margin-bottom: 22px;
-    }
+    h1 { font-size: clamp(36px, 6vw, 62px); line-height: 1.1; }
+    h2 { font-size: clamp(27px, 4vw, 38px); line-height: 1.2; }
+    h3 { line-height: 1.3; }
 
-    h1 span, h2 span {
-      color: var(--green);
-    }
+    p { color: var(--muted); }
 
-    .hero p, .lead {
-      max-width: 690px;
-      color: var(--muted);
-      font-size: 17px;
-      margin-bottom: 28px;
-    }
+    .highlight { color: var(--green); }
 
-    .button-row {
+    .hero-actions {
       display: flex;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
     }
 
-    .section-heading {
-      margin-bottom: 27px;
+    .section-heading { margin-bottom: 22px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 25px;
     }
 
-    .section-heading h1 {
-      font-size: clamp(32px, 5vw, 46px);
-      margin-bottom: 12px;
+    .card {
+      min-width: 0;
+      padding: 23px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
     }
 
-    .section-heading p {
-      max-width: 700px;
-      color: var(--muted);
-    }
+    .card p { font-size: 14px; }
 
-    .mini-stats {
+    .card-icon { font-size: 30px; }
+
+    .card .btn { margin-top: 8px; }
+
+    .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 22px;
+      gap: 15px;
+      margin: 25px 0;
     }
 
     .stat {
       padding: 20px;
+      text-align: center;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 13px;
+      border-radius: 14px;
     }
 
     .stat strong {
       display: block;
       color: var(--green);
-      font-size: 23px;
-      margin-bottom: 5px;
-    }
-
-    .stat small {
-      color: var(--muted);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 19px;
-    }
-
-    .course-card, .info-card, .form-card, .welcome-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      overflow: hidden;
-    }
-
-    .course-image {
-      height: 160px;
-      position: relative;
-      display: grid;
-      place-items: center;
-      background: #132a3d;
-      overflow: hidden;
-    }
-
-    .course-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .3s ease;
-    }
-
-    .course-card:hover .course-image img {
-      transform: scale(1.04);
-    }
-
-    .course-emoji {
-      position: absolute;
-      left: 15px;
-      bottom: 12px;
-      font-size: 30px;
-      filter: drop-shadow(0 2px 8px #000);
-    }
-
-    .course-body {
-      padding: 20px;
-    }
-
-    .course-body h3, .info-card h3 {
-      margin-bottom: 9px;
-      font-size: 18px;
-    }
-
-    .course-body p, .info-card p {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 17px;
-    }
-
-    .course-tag {
-      display: inline-block;
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .course-body .btn {
-      width: 100%;
-    }
-
-    .info-card {
-      padding: 24px;
-    }
-
-    .info-icon {
-      font-size: 30px;
-      margin-bottom: 14px;
+      font-size: 27px;
     }
 
     .form-card {
       max-width: 720px;
-      padding: clamp(20px, 4vw, 35px);
-    }
-
-    .form-card h2 {
-      margin-bottom: 7px;
-    }
-
-    .form-note {
-      color: var(--muted);
-      margin-bottom: 23px;
-      font-size: 14px;
+      padding: clamp(20px, 4vw, 34px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
     }
 
     .form-grid {
@@ -442,1503 +318,965 @@
       gap: 16px;
     }
 
-    .field {
-      margin-bottom: 17px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
+    .field { margin-bottom: 16px; }
 
     label {
       display: block;
       margin-bottom: 7px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #e3edf7;
+      font-size: 14px;
+      font-weight: bold;
     }
 
     input, textarea, select {
-      display: block;
       width: 100%;
       padding: 12px 13px;
-      color: white;
-      background: #081523;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      color: var(--text);
+      background: #091626;
+      border: 1px solid #344960;
+      border-radius: 9px;
       outline: none;
     }
 
     input:focus, textarea:focus, select:focus {
       border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(0,230,167,.08);
+      box-shadow: 0 0 0 2px rgba(38, 230, 160, .12);
     }
 
-    select option {
-      background: #081523;
-    }
+    textarea { min-height: 145px; resize: vertical; }
 
-    textarea {
-      resize: vertical;
-      min-height: 110px;
-    }
-
-    .form-message {
-      margin-top: 16px;
-      color: var(--green);
-      overflow-wrap: anywhere;
-    }
-
-    .welcome-card {
-      padding: clamp(25px, 5vw, 45px);
-      margin-bottom: 25px;
-      background:
-        radial-gradient(circle at top right, rgba(0,230,167,.17), transparent 40%),
-        var(--panel);
-    }
-
-    .welcome-card h1 {
-      font-size: clamp(31px, 5vw, 48px);
-      overflow-wrap: anywhere;
-    }
-
-    .welcome-card p {
+    .notice {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #0a1928;
       color: var(--muted);
-      max-width: 650px;
-      margin-bottom: 20px;
+      overflow-wrap: anywhere;
     }
+
+    .notice.success { color: var(--green); }
+    .notice.error { color: var(--danger); }
 
     .progress-track {
-      width: 100%;
-      height: 9px;
-      background: #243348;
-      border-radius: 20px;
+      height: 12px;
       overflow: hidden;
-      margin: 10px 0 14px;
+      background: #25364a;
+      border-radius: 99px;
     }
 
     .progress-fill {
+      width: 0;
       height: 100%;
-      width: 0%;
       background: var(--green);
-      transition: width .25s ease;
+      transition: width .3s;
     }
 
-    .progress-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .empty-state {
-      padding: 25px;
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      color: var(--muted);
-      background: rgba(255,255,255,.02);
-    }
-
-    .text-panel {
-      max-width: 900px;
-      padding: clamp(22px, 4vw, 38px);
-      background: var(--panel);
+    .quiz-option {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 13px;
+      color: var(--text);
+      text-align: left;
+      background: var(--panel2);
       border: 1px solid var(--border);
-      border-radius: 15px;
+      border-radius: 10px;
     }
 
-    .text-panel h2 {
-      margin: 24px 0 8px;
-    }
+    .quiz-option:hover { border-color: var(--green); }
 
-    .text-panel h2:first-child {
-      margin-top: 0;
-    }
-
-    .text-panel p, .text-panel li {
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .text-panel ul {
-      padding-left: 22px;
-    }
-
-    .email-card {
-      padding: 25px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 22px;
-    }
-
-    .email-address {
-      display: inline-block;
-      margin: 12px 0 17px;
-      font-size: clamp(17px, 3vw, 23px);
-      font-weight: 800;
-      overflow-wrap: anywhere;
-    }
-
-    .site-footer {
+    footer {
       padding: 25px 5%;
       border-top: 1px solid var(--border);
-      background: #050d18;
-      color: var(--muted);
-      font-size: 13px;
+      text-align: center;
     }
 
-    .footer-inner {
-      max-width: 1180px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+    footer p { font-size: 13px; }
 
     .footer-links {
       display: flex;
-      gap: 15px;
       flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
     }
 
-    .notice {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 20px;
+    .footer-links button {
+      color: var(--green);
+      background: none;
+      border: none;
+      text-decoration: underline;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .small { font-size: 13px; }
 
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 560px) {
-      .topbar {
-        padding: 12px 4%;
-        gap: 8px;
-      }
-
-      .brand {
-        gap: 7px;
-      }
-
-      .brand-name {
-        font-size: 13px;
-        letter-spacing: 0;
-      }
-
-      .brand-icon {
-        width: 33px;
-        height: 33px;
-        font-size: 18px;
-      }
-
-      .header-actions {
-        gap: 7px;
-      }
-
-      .header-actions .btn {
-        padding: 9px 10px;
-        font-size: 12px;
-      }
-
-      .menu-btn {
-        width: 38px;
-        height: 38px;
-      }
-
-      .page {
-        padding: 25px 4% 45px;
-      }
-
-      .hero {
-        min-height: 480px;
-        padding: 26px 20px;
-      }
-
-      .grid, .mini-stats, .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-
-      .footer-inner {
-        align-items: flex-start;
-      }
+      .topbar { padding: 10px 4%; gap: 8px; }
+      .brand { gap: 6px; font-size: 14px; }
+      .brand-mark { width: 32px; height: 32px; }
+      .header-actions { gap: 6px; }
+      .header-actions .btn { padding: 9px; font-size: 12px; }
+      .menu-toggle { width: 43px; height: 43px; }
+      .grid, .stats, .form-grid { grid-template-columns: 1fr; }
+      .hero { min-height: 420px; padding: 24px; }
+      .page { width: 92%; padding-top: 28px; }
     }
   </style>
 </head>
 
 <body>
-
   <header class="topbar">
-    <a class="brand" href="#home" aria-label="Next Gen Trader home">
-      <span class="brand-icon">N</span>
-      <span class="brand-name">NEXT GEN <span>TRADER</span></span>
+    <a class="brand" href="#" data-page="home" aria-label="Next Gen Trader home">
+      <span class="brand-mark">N</span>
+      <span>NEXT GEN TRADER</span>
     </a>
 
     <div class="header-actions">
-      <button class="btn btn-primary" id="headerLogin" type="button"
-        onclick="showPage('login')">Login</button>
-      <button class="menu-btn" id="menuBtn" type="button"
-        aria-label="Open navigation menu" aria-expanded="false">☰</button>
+      <button class="btn btn-outline" id="accountButton" type="button">Log In</button>
+
+      <!-- Menu is on the RIGHT side of the header -->
+      <button class="menu-toggle" id="menuToggle" type="button"
+        aria-label="Open navigation menu" aria-expanded="false"
+        aria-controls="sideMenu">
+        <span>
+          <span class="hamburger">
+            <span></span><span></span><span></span>
+          </span>
+          <span class="menu-label">MENU</span>
+        </span>
+      </button>
     </div>
   </header>
 
-  <nav class="side-menu" id="sideMenu" aria-label="Main navigation">
-    <div class="menu-heading">NAVIGATION</div>
+  <div class="menu-backdrop" id="menuBackdrop" hidden></div>
 
-    <button class="menu-link active" data-page="home">
-      <span class="menu-icon">⌂</span> Home
-    </button>
-    <button class="menu-link" data-page="courses">
-      <span class="menu-icon">▤</span> Courses
-    </button>
-    <button class="menu-link" data-page="practice">
-      <span class="menu-icon">◉</span> Practice
-    </button>
-    <button class="menu-link" data-page="apply">
-      <span class="menu-icon">✎</span> Apply for a Course
-    </button>
-    <button class="menu-link" data-page="mission">
-      <span class="menu-icon">✦</span> Mission & Vision
-    </button>
+  <nav class="side-menu" id="sideMenu" aria-label="Main navigation" aria-hidden="true">
+    <div class="menu-heading">
+      <strong>Explore Pages</strong>
+      <button class="btn btn-outline" id="closeMenu" type="button"
+        aria-label="Close navigation menu">✕</button>
+    </div>
 
-    <div class="menu-divider"></div>
-    <div class="menu-heading">YOUR ACCOUNT</div>
+    <div class="menu-links" id="menuLinks">
+      <button data-page="home">🏠 Home</button>
+      <button data-page="courses">📚 Courses</button>
+      <button data-page="practice">🧠 Practice Quiz</button>
+      <button data-page="apply">📝 Apply for a Course</button>
+      <button data-page="mission">🎯 Mission & Vision</button>
+      <button data-page="dashboard">📊 My Dashboard</button>
+      <button data-page="login">🔐 Log In</button>
+      <button data-page="signup">✨ Sign Up</button>
+      <button data-page="contact">✉️ Support & Contact</button>
+      <button data-page="privacy">🔒 Privacy</button>
+      <button data-page="terms">📋 Terms & Disclaimer</button>
+    </div>
 
-    <button class="menu-link" data-page="dashboard">
-      <span class="menu-icon">▦</span> My Dashboard
-    </button>
-    <button class="menu-link" data-page="login">
-      <span class="menu-icon">↪</span> Login
-    </button>
-    <button class="menu-link" data-page="signup">
-      <span class="menu-icon">＋</span> Sign Up
-    </button>
-
-    <div class="menu-divider"></div>
-    <div class="menu-heading">INFORMATION</div>
-
-    <button class="menu-link" data-page="support">
-      <span class="menu-icon">✉</span> Support & Contact
-    </button>
-    <button class="menu-link" data-page="privacy">
-      <span class="menu-icon">♧</span> Privacy
-    </button>
-    <button class="menu-link" data-page="terms">
-      <span class="menu-icon">▣</span> Terms & Disclaimer
-    </button>
-
-    <div class="menu-divider"></div>
-    <div class="menu-user" id="menuUser">You are browsing as a guest.</div>
-    <button class="menu-link hidden" id="logoutBtn" type="button">
-      <span class="menu-icon">⇥</span> Log Out
-    </button>
+    <p class="menu-note">Choose a page. The menu will close automatically. You can also click outside it to close.</p>
   </nav>
 
   <main>
-    <!-- HOME PAGE -->
+    <!-- HOME -->
     <section class="page active" id="page-home">
-      <div class="container">
-        <div class="hero">
-          <div class="hero-content">
-            <span class="eyebrow">YOUR JOURNEY STARTS HERE</span>
-            <h1>LEARN THE MARKET.<br><span>BUILD YOUR FUTURE.</span></h1>
-            <p>
-              Explore trading concepts, understand financial markets,
-              practise with simulations, and develop responsible decision-making
-              skills — one lesson at a time.
-            </p>
-            <div class="button-row">
-              <button class="btn btn-primary" onclick="showPage('courses')">
-                Explore Courses →
-              </button>
-              <button class="btn btn-secondary" onclick="showPage('signup')">
-                Create Your Account
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mini-stats">
-          <div class="stat">
-            <strong>Learn</strong>
-            <small>Understand market fundamentals.</small>
-          </div>
-          <div class="stat">
-            <strong>Practise</strong>
-            <small>Build skills with simulated examples.</small>
-          </div>
-          <div class="stat">
-            <strong>Grow</strong>
-            <small>Track your learning progress.</small>
-          </div>
-        </div>
-
-        <div style="margin-top:35px" class="info-card">
-          <div class="info-icon">🌱</div>
-          <h3>Your progress, your journey</h3>
+      <div class="hero">
+        <div class="hero-content">
+          <span class="eyebrow">Learn • Practise • Grow</span>
+          <h1>Build Your Trading Knowledge. <span class="highlight">Trade Smarter.</span></h1>
           <p>
-            Create a demo account to explore your personal dashboard and
-            save your learning progress in this browser.
+            Learn how financial markets work, understand risk, study charts,
+            and practise your knowledge before making real-world decisions.
           </p>
-          <button class="btn btn-primary" onclick="showPage('signup')">
-            Start Learning
-          </button>
+          <div class="hero-actions">
+            <button class="btn btn-primary" data-page="courses">Explore Courses →</button>
+            <button class="btn btn-outline" data-page="practice">Try Practice Quiz</button>
+          </div>
         </div>
       </div>
+
+      <div class="stats">
+        <div class="stat"><strong>14</strong><span>Learning Topics</span></div>
+        <div class="stat"><strong>24/7</strong><span>Learn at Your Pace</span></div>
+        <div class="stat"><strong>1st</strong><span>Knowledge Before Risk</span></div>
+      </div>
+
+      <div class="section-heading">
+        <h2>Start with the <span class="highlight">Foundations</span></h2>
+        <p>Explore educational material and build your understanding one topic at a time.</p>
+      </div>
+      <div class="grid" id="homeCourses"></div>
     </section>
 
-    <!-- COURSES PAGE -->
+    <!-- COURSES -->
     <section class="page" id="page-courses">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">THE LEARNING HUB</span>
-          <h1>Explore <span>Courses</span></h1>
-          <p>
-            Learn about different markets and trading concepts.
-            These courses are for education, not promises of profit.
-          </p>
-        </div>
+      <span class="eyebrow">Learning Library</span>
+      <h2>Explore Our <span class="highlight">Courses</span></h2>
+      <p>Choose a topic to begin learning. These are educational previews, not promises of profit.</p>
+      <div class="grid" id="allCourses"></div>
+    </section>
 
-        <div class="grid" id="courseGrid"></div>
+    <!-- LESSON -->
+    <section class="page" id="page-lesson">
+      <button class="btn btn-outline" data-page="courses">← All Courses</button>
+      <h2 id="lessonTitle">Course lesson</h2>
+      <div class="card">
+        <p id="lessonDescription"></p>
+        <h3>Learning checklist</h3>
+        <ul id="lessonPoints"></ul>
+        <p class="small">Complete your learning at your own pace. Understanding risk matters more than chasing fast profits.</p>
+        <button class="btn btn-primary" id="completeLesson">Mark Topic Completed</button>
+        <div id="lessonStatus" class="notice" role="status"></div>
       </div>
     </section>
 
-    <!-- PRACTICE PAGE -->
+    <!-- PRACTICE -->
     <section class="page" id="page-practice">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">LEARN WITHOUT REAL-MONEY RISK</span>
-          <h1>Practice <span>Zone</span></h1>
-          <p>
-            Test your understanding using educational questions and simulated
-            market examples. No real trades or real money are involved here.
-          </p>
-        </div>
-
-        <div class="grid">
-          <article class="info-card">
-            <div class="info-icon">📈</div>
-            <h3>Chart Reading</h3>
-            <p>Learn what candles, trends, and price movements can represent.</p>
-            <button class="btn btn-primary" onclick="startQuiz()">
-              Start Quiz
-            </button>
-          </article>
-
-          <article class="info-card">
-            <div class="info-icon">🛡️</div>
-            <h3>Risk Awareness</h3>
-            <p>Understand why planning, uncertainty, and risk limits matter.</p>
-            <button class="btn btn-secondary"
-              onclick="openCourse('Risk Management')">
-              Study Risk
-            </button>
-          </article>
-
-          <article class="info-card">
-            <div class="info-icon">🧠</div>
-            <h3>Trading Psychology</h3>
-            <p>Explore patience, emotional decisions, and avoiding impulsive choices.</p>
-            <button class="btn btn-secondary"
-              onclick="openCourse('Trading Psychology')">
-              Explore Lesson
-            </button>
-          </article>
-        </div>
-
-        <div class="info-card" id="quizBox" style="margin-top:22px">
-          <h3>Quick Knowledge Check</h3>
-          <p id="quizQuestion">Choose “Start Quiz” to begin.</p>
-          <div id="quizOptions" class="button-row"></div>
-          <p id="quizFeedback" class="form-message" aria-live="polite"></p>
-        </div>
+      <span class="eyebrow">Test Your Knowledge</span>
+      <h2>Practice <span class="highlight">Quiz</span></h2>
+      <p>Choose an answer to see an explanation. This quiz is for learning, not financial advice.</p>
+      <div class="form-card">
+        <h3 id="quizQuestion"></h3>
+        <div id="quizOptions"></div>
+        <div class="notice" id="quizFeedback" role="status">Choose an answer to begin.</div>
+        <p>Score: <strong id="quizScore">0</strong> / <span id="quizTotal">0</span></p>
+        <button class="btn btn-primary" id="nextQuestion">Next Question →</button>
+        <button class="btn btn-outline" id="resetQuiz">Restart Quiz</button>
       </div>
     </section>
 
-    <!-- APPLY PAGE -->
+    <!-- APPLY -->
     <section class="page" id="page-apply">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">TAKE THE NEXT STEP</span>
-          <h1>Apply for a <span>Course</span></h1>
-          <p>Tell us which course interests you and why you want to learn.</p>
+      <span class="eyebrow">Course Application</span>
+      <h2>Apply for a <span class="highlight">Course</span></h2>
+      <p>Submit your interest in a learning topic. This demo stores your application in this browser only.</p>
+      <form class="form-card" id="applicationForm">
+        <div class="field">
+          <label for="appName">Full name</label>
+          <input id="appName" name="name" required maxlength="100">
         </div>
+        <div class="field">
+          <label for="appEmail">Email address</label>
+          <input id="appEmail" name="email" type="email" required maxlength="150">
+        </div>
+        <div class="field">
+          <label for="appCourse">Course of interest</label>
+          <select id="appCourse" name="course" required></select>
+        </div>
+        <div class="field">
+          <label for="appReason">Why do you want to learn this topic?</label>
+          <textarea id="appReason" name="reason" required maxlength="1500"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit Application</button>
+        <div id="applicationStatus" class="notice" role="status"></div>
+      </form>
+    </section>
 
-        <form class="form-card" id="applicationForm">
-          <h2>Course Application</h2>
-          <p class="form-note">
-            This demo form does not yet send an application to an administrator.
-          </p>
+    <!-- MISSION -->
+    <section class="page" id="page-mission">
+      <span class="eyebrow">Who We Are</span>
+      <h2>Our Mission & <span class="highlight">Vision</span></h2>
+      <div class="grid">
+        <article class="card">
+          <div class="card-icon">🎯</div>
+          <h3>Our Mission</h3>
+          <p>To make financial-market education more accessible and encourage careful, informed learning.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">🌍</div>
+          <h3>Our Vision</h3>
+          <p>To build a community of responsible learners who understand both market opportunities and risks.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">🛡️</div>
+          <h3>Our Values</h3>
+          <p>Honesty, patience, continuous learning, risk awareness, and respect for every learner.</p>
+        </article>
+      </div>
+    </section>
 
+    <!-- DASHBOARD -->
+    <section class="page" id="page-dashboard">
+      <span class="eyebrow">Your Learning Space</span>
+      <h2 id="welcomeHeading">Welcome to your dashboard!</h2>
+      <p id="welcomeMessage">Log in to view your saved learning progress on this browser.</p>
+
+      <div class="stats">
+        <div class="stat"><strong id="completedCount">0</strong><span>Topics Completed</span></div>
+        <div class="stat"><strong id="totalCount">14</strong><span>Available Topics</span></div>
+        <div class="stat"><strong id="progressPercent">0%</strong><span>Progress</span></div>
+      </div>
+
+      <div class="card">
+        <h3>Your learning progress</h3>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <p id="progressMessage">Every topic you understand is progress. Keep learning carefully!</p>
+        <button class="btn btn-primary" data-page="courses">Continue Learning</button>
+        <button class="btn btn-outline" id="logoutButton">Log Out</button>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>Completed Topics</h3>
+        <ul id="completedList"><li>No topics completed yet.</li></ul>
+      </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section class="page" id="page-login">
+      <span class="eyebrow">Welcome Back</span>
+      <h2>Log In to <span class="highlight">Next Gen Trader</span></h2>
+      <p>This is a front-end demonstration login. Do not use a real or reused password.</p>
+      <form class="form-card" id="loginForm">
+        <div class="field">
+          <label for="loginEmail">Email address</label>
+          <input id="loginEmail" type="email" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" required autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" type="submit">Log In</button>
+        <div id="loginStatus" class="notice" role="status"></div>
+        <p>Don't have an account? <a href="#" data-page="signup">Sign up here</a>.</p>
+      </form>
+    </section>
+
+    <!-- SIGN UP -->
+    <section class="page" id="page-signup">
+      <span class="eyebrow">Join the Community</span>
+      <h2>Create Your <span class="highlight">Account</span></h2>
+      <p>Demo accounts are saved in this browser only and are not suitable for a real public website.</p>
+      <form class="form-card" id="signupForm">
+        <div class="field">
+          <label for="signupName">Full name</label>
+          <input id="signupName" required maxlength="100" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="signupEmail">Email address</label>
+          <input id="signupEmail" type="email" required maxlength="150" autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="signupPassword">Create a password</label>
+          <input id="signupPassword" type="password" required minlength="8" autocomplete="new-password">
+          <p class="small">For this demo only. Never use a password you use for another account.</p>
+        </div>
+        <button class="btn btn-primary" type="submit">Create Account</button>
+        <div id="signupStatus" class="notice" role="status"></div>
+      </form>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="page" id="page-contact">
+      <span class="eyebrow">We're Here to Help</span>
+      <h2>Support & <span class="highlight">Contact</span></h2>
+      <p>Send a question or feedback. Enter your own email address so we can identify where the message came from.</p>
+
+      <div class="form-card">
+        <p><strong>Support email:</strong>
+          <a href="mailto:gisamanav@gmail.com">gisamanav@gmail.com</a>
+        </p>
+
+        <form id="contactForm">
           <div class="form-grid">
             <div class="field">
-              <label for="appName">Full Name</label>
-              <input id="appName" required placeholder="Enter your name">
+              <label for="contactName">Your name</label>
+              <input id="contactName" name="from_name" required maxlength="100" autocomplete="name">
             </div>
-
             <div class="field">
-              <label for="appEmail">Email Address</label>
-              <input id="appEmail" type="email" required placeholder="you@example.com">
-            </div>
-
-            <div class="field full">
-              <label for="appCourse">Choose a Course</label>
-              <select id="appCourse" required>
-                <option value="">Select a course</option>
-              </select>
-            </div>
-
-            <div class="field full">
-              <label for="appReason">Why do you want to learn this?</label>
-              <textarea id="appReason" required
-                placeholder="Tell us about your learning goals..."></textarea>
+              <label for="contactEmail">Your email address</label>
+              <input id="contactEmail" name="reply_to" type="email" required maxlength="150" autocomplete="email">
             </div>
           </div>
 
-          <button class="btn btn-primary" type="submit">Submit Application</button>
-          <p class="form-message" id="applicationMessage" aria-live="polite"></p>
+          <div class="field">
+            <label for="contactSubject">Subject</label>
+            <input id="contactSubject" name="subject" required maxlength="150" placeholder="What do you need help with?">
+          </div>
+
+          <div class="field">
+            <label for="contactMessage">Your message</label>
+            <textarea id="contactMessage" name="message" required maxlength="4000" placeholder="Write your message here..."></textarea>
+          </div>
+
+          <button class="btn btn-primary" id="sendMessageButton" type="submit">✉️ Send Message</button>
+          <div id="contactStatus" class="notice" role="status" aria-live="polite">
+            Fill in all fields, then select Send Message.
+          </div>
         </form>
+
+        <p class="small">
+          If the email service has not been configured, this form will tell you rather than falsely claiming the message was sent.
+          You can still use the email link above to open your email application.
+        </p>
       </div>
     </section>
 
-    <!-- MISSION AND VISION PAGE -->
-    <section class="page" id="page-mission">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">WHAT DRIVES US</span>
-          <h1>Mission & <span>Vision</span></h1>
-          <p>The purpose and future we want Next Gen Trader to work toward.</p>
-        </div>
-
-        <div class="grid">
-          <article class="info-card">
-            <div class="info-icon">🎯</div>
-            <h3>Our Mission</h3>
-            <p>
-              To make trading and financial-market education easier to
-              understand through structured lessons, practical examples,
-              risk awareness, and responsible learning.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <div class="info-icon">🌍</div>
-            <h3>Our Vision</h3>
-            <p>
-              To build an accessible learning community where people can
-              develop financial-market knowledge, think critically, and make
-              informed decisions.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <div class="info-icon">🤝</div>
-            <h3>Our Values</h3>
-            <p>
-              Education, honesty, discipline, security, curiosity, and
-              respect for the risks involved in financial markets.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- SUPPORT PAGE -->
-    <section class="page" id="page-support">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">WE'RE HERE TO HELP</span>
-          <h1>Support & <span>Contact</span></h1>
-          <p>Questions or suggestions about Next Gen Trader? Contact us.</p>
-        </div>
-
-        <div class="email-card">
-          <div class="info-icon">📧</div>
-          <h2>Send us an email</h2>
-          <p style="color:var(--muted)">
-            Click the address below to open your email application and write
-            a message directly to our support contact.
-          </p>
-
-          <a class="email-address"
-             href="mailto:gisamanav@gmail.com?subject=Next%20Gen%20Trader%20Support">
-            gisamanav@gmail.com
-          </a>
-
-          <div class="button-row">
-            <a class="btn btn-primary"
-               href="mailto:gisamanav@gmail.com?subject=Next%20Gen%20Trader%20Support">
-              ✉ Write an Email
-            </a>
-            <button class="btn btn-secondary" type="button"
-              onclick="copySupportEmail()">Copy Email Address</button>
-          </div>
-          <p class="form-message" id="copyMessage" aria-live="polite"></p>
-        </div>
-
-        <form class="form-card" id="supportForm">
-          <h2>Prepare a Message</h2>
-          <p class="form-note">
-            Fill this in to open a pre-addressed email. Your email application
-            must be configured to send it.
-          </p>
-
-          <div class="field">
-            <label for="supportName">Your Name</label>
-            <input id="supportName" required placeholder="Your name">
-          </div>
-
-          <div class="field">
-            <label for="supportSubject">Subject</label>
-            <input id="supportSubject" required placeholder="How can we help?">
-          </div>
-
-          <div class="field">
-            <label for="supportMessage">Your Message</label>
-            <textarea id="supportMessage" required
-              placeholder="Write your message here..."></textarea>
-          </div>
-
-          <button class="btn btn-primary" type="submit">Open Email to Send</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- PRIVACY PAGE -->
+    <!-- PRIVACY -->
     <section class="page" id="page-privacy">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">YOUR INFORMATION</span>
-          <h1>Privacy <span>Notice</span></h1>
-        </div>
-
-        <div class="text-panel">
-          <h2>Demo website notice</h2>
-          <p>
-            This version of Next Gen Trader is a front-end demonstration.
-            Its demo account and learning progress are stored in your browser
-            using local storage.
-          </p>
-
-          <h2>What this means</h2>
-          <ul>
-            <li>Demo account information is not automatically sent to a server.</li>
-            <li>Browser data may be lost when local site data is cleared.</li>
-            <li>Data in this browser does not automatically follow you to another device.</li>
-            <li>Do not enter real passwords or sensitive personal information.</li>
-          </ul>
-
-          <h2>Future improvements</h2>
-          <p>
-            A production version will need properly configured authentication,
-            secure data storage, and a clear privacy policy explaining any
-            information collected and how it is used.
-          </p>
-        </div>
+      <span class="eyebrow">Your Information</span>
+      <h2>Privacy <span class="highlight">Notice</span></h2>
+      <div class="card">
+        <h3>Demo website</h3>
+        <p>This version saves demonstration account details and learning progress in the browser's local storage. Other people using the same browser profile may be able to access that data.</p>
+        <p>Do not enter sensitive information. A real public service needs secure authentication, appropriate data protection, and a properly configured backend.</p>
+        <h3>Contact form</h3>
+        <p>When configured, the contact form sends the fields you submit through the email service you choose. Tell visitors how their messages will be used before launching publicly.</p>
       </div>
     </section>
 
-    <!-- TERMS PAGE -->
+    <!-- TERMS -->
     <section class="page" id="page-terms">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">PLEASE READ</span>
-          <h1>Terms & <span>Disclaimer</span></h1>
-        </div>
-
-        <div class="text-panel">
-          <h2>Education only</h2>
-          <p>
-            Next Gen Trader is intended for learning about financial markets.
-            Its educational material is not personal financial or investment
-            advice, and this website is not a brokerage service.
-          </p>
-
-          <h2>Market risk</h2>
-          <p>
-            Trading financial products, including currencies, stocks,
-            cryptocurrencies, and derivatives, can involve substantial risk.
-            Prices can move unpredictably, and losses are possible.
-          </p>
-
-          <h2>No guaranteed results</h2>
-          <p>
-            No course, strategy, indicator, or example can guarantee profits.
-            Understand the risks and use simulations for practice before
-            considering real financial decisions.
-          </p>
-
-          <h2>Website features</h2>
-          <p>
-            Account creation, course applications, and progress tracking on
-            this version are demonstrations. They do not represent a fully
-            deployed account or course-administration system.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SIGN UP PAGE -->
-    <section class="page" id="page-signup">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">JOIN THE LEARNING JOURNEY</span>
-          <h1>Create Your <span>Account</span></h1>
-          <p>Create a demo account to try the personalized dashboard.</p>
-        </div>
-
-        <form class="form-card" id="signupForm">
-          <h2>Sign Up</h2>
-          <p class="form-note">
-            Demo only. Do not use a password that you use for another account.
-          </p>
-
-          <div class="field">
-            <label for="signupName">Full Name</label>
-            <input id="signupName" autocomplete="name" required
-              placeholder="Enter your full name">
-          </div>
-
-          <div class="field">
-            <label for="signupEmail">Email Address</label>
-            <input id="signupEmail" type="email" autocomplete="email" required
-              placeholder="you@example.com">
-          </div>
-
-          <div class="field">
-            <label for="signupPassword">Create a Demo Password</label>
-            <input id="signupPassword" type="password" minlength="6"
-              autocomplete="new-password" required placeholder="At least 6 characters">
-          </div>
-
-          <button class="btn btn-primary" type="submit">Create Demo Account</button>
-          <p class="form-message" id="signupMessage" aria-live="polite"></p>
-
-          <p class="form-note" style="margin-top:18px;margin-bottom:0">
-            Already have a demo account?
-            <a href="#login" onclick="showPage('login');return false;">Log in</a>
-          </p>
-        </form>
-      </div>
-    </section>
-
-    <!-- LOGIN PAGE -->
-    <section class="page" id="page-login">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">WELCOME BACK</span>
-          <h1>Log In to <span>Continue</span></h1>
-          <p>Enter the details for the demo account created in this browser.</p>
-        </div>
-
-        <form class="form-card" id="loginForm">
-          <h2>Welcome Back 👋</h2>
-          <p class="form-note">
-            Your demo account must have been created in this same browser.
-          </p>
-
-          <div class="field">
-            <label for="loginEmail">Email Address</label>
-            <input id="loginEmail" type="email" autocomplete="username"
-              required placeholder="you@example.com">
-          </div>
-
-          <div class="field">
-            <label for="loginPassword">Password</label>
-            <input id="loginPassword" type="password"
-              autocomplete="current-password" required placeholder="Enter demo password">
-          </div>
-
-          <button class="btn btn-primary" type="submit">Log In →</button>
-          <p class="form-message" id="loginMessage" aria-live="polite"></p>
-
-          <p class="form-note" style="margin-top:18px;margin-bottom:0">
-            New here?
-            <a href="#signup" onclick="showPage('signup');return false;">Create an account</a>
-          </p>
-        </form>
-      </div>
-    </section>
-
-    <!-- PERSONAL DASHBOARD -->
-    <section class="page" id="page-dashboard">
-      <div class="container">
-        <div id="guestDashboard" class="empty-state">
-          <h2>You are not logged in yet.</h2>
-          <p style="margin:12px 0">Log in to view your personalized welcome page.</p>
-          <button class="btn btn-primary" onclick="showPage('login')">Log In</button>
-        </div>
-
-        <div id="userDashboard" class="hidden">
-          <div class="welcome-card">
-            <span class="eyebrow">YOUR PERSONAL LEARNING SPACE</span>
-            <h1>Welcome back, <span id="welcomeName">Trader</span>! 👋</h1>
-            <p>
-              Great to see you again. Every lesson is a new opportunity to
-              improve your knowledge. Keep learning at your own pace.
-            </p>
-            <div class="button-row">
-              <button class="btn btn-primary" onclick="continueLearning()">
-                ▶ Continue Learning
-              </button>
-              <button class="btn btn-secondary" onclick="showPage('courses')">
-                Explore Courses
-              </button>
-            </div>
-          </div>
-
-          <div class="grid">
-            <article class="info-card">
-              <div class="info-icon">📚</div>
-              <h3>Your Learning Progress</h3>
-              <p id="progressCourse">You have not started a course yet.</p>
-              <div class="progress-track">
-                <div class="progress-fill" id="progressFill"></div>
-              </div>
-              <div class="progress-row">
-                <span id="progressLabel">0% complete</span>
-                <span id="progressLessons">0 lessons completed</span>
-              </div>
-            </article>
-
-            <article class="info-card">
-              <div class="info-icon">✨</div>
-              <h3>Daily Motivation</h3>
-              <p id="motivationText">
-                Small steps taken consistently can lead to meaningful progress.
-              </p>
-              <button class="btn btn-secondary" onclick="newMotivation()">
-                New Inspiration
-              </button>
-            </article>
-
-            <article class="info-card">
-              <div class="info-icon">🧭</div>
-              <h3>Next Step</h3>
-              <p>Choose a topic, learn a concept, and record your progress.</p>
-              <button class="btn btn-secondary" onclick="showPage('practice')">
-                Go to Practice
-              </button>
-            </article>
-          </div>
-
-          <div class="info-card" style="margin-top:22px">
-            <h3>Continue your course</h3>
-            <p id="resumeText">Choose a course to begin your learning journey.</p>
-            <div class="button-row">
-              <button class="btn btn-primary" id="resumeButton"
-                onclick="continueLearning()">Open Course</button>
-              <button class="btn btn-secondary" onclick="logout()">Log Out</button>
-            </div>
-          </div>
-        </div>
+      <span class="eyebrow">Please Read</span>
+      <h2>Terms & <span class="highlight">Disclaimer</span></h2>
+      <div class="card">
+        <h3>Educational use only</h3>
+        <p>Next Gen Trader provides educational material, not individual investment, legal, or tax advice. The content is not a recommendation to buy or sell any asset.</p>
+        <h3>Trading involves risk</h3>
+        <p>Financial markets can be volatile. You can lose some or all of the money you put at risk. Past performance does not guarantee future results, and profits are never guaranteed.</p>
+        <h3>Demo limitations</h3>
+        <p>This prototype's login, course applications, and progress are browser-based demonstrations. Do not rely on them for secure account management or official application processing.</p>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div>
-        <strong style="color:white">NEXT GEN <span style="color:var(--green)">TRADER</span></strong>
-        <p>Learn. Practise. Grow.</p>
-        <p>© <span id="year"></span> Next Gen Trader</p>
-      </div>
-
-      <div class="footer-links">
-        <a href="#support" onclick="showPage('support');return false;">Contact</a>
-        <a href="#privacy" onclick="showPage('privacy');return false;">Privacy</a>
-        <a href="#terms" onclick="showPage('terms');return false;">Terms</a>
-      </div>
+  <footer>
+    <div class="footer-links">
+      <button data-page="mission">About Us</button>
+      <button data-page="courses">Courses</button>
+      <button data-page="contact">Support & Contact</button>
+      <button data-page="privacy">Privacy</button>
+      <button data-page="terms">Terms & Disclaimer</button>
     </div>
-    <p class="notice">
-      Educational content only. Financial markets involve risk; profits are not guaranteed.
-    </p>
+    <p>© <span id="year"></span> Next Gen Trader. Learn first. Understand risk. Make informed decisions.</p>
   </footer>
 
   <script>
-    // --------------------------------------------
-    // NAVIGATION: display one page at a time
-    // --------------------------------------------
+    "use strict";
 
-    const menuBtn = document.getElementById("menuBtn");
-    const sideMenu = document.getElementById("sideMenu");
-    const menuLinks = document.querySelectorAll(".menu-link[data-page]");
+    // =========================================================
+    // CONFIGURATION
+    // Add your EmailJS values from your EmailJS account.
+    // Never put a private email-service secret in frontend code.
+    // =========================================================
+    const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+    const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+    const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+    const SUPPORT_EMAIL = "gisamanav@gmail.com";
 
-    function closeMenu() {
-      sideMenu.classList.remove("open");
-      menuBtn.setAttribute("aria-expanded", "false");
+    const emailConfigured =
+      EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY" &&
+      EMAILJS_SERVICE_ID !== "YOUR_EMAILJS_SERVICE_ID" &&
+      EMAILJS_TEMPLATE_ID !== "YOUR_EMAILJS_TEMPLATE_ID";
+
+    if (emailConfigured && window.emailjs) {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
     }
 
-    menuBtn.addEventListener("click", () => {
-      const isOpen = sideMenu.classList.toggle("open");
-      menuBtn.setAttribute("aria-expanded", String(isOpen));
+    // =========================================================
+    // COURSE DATA
+    // =========================================================
+    const courses = [
+      { title: "Trading Fundamentals", icon: "📈", category: "Beginner",
+        description: "Understand markets, buyers, sellers, prices, and basic terminology.",
+        points: ["What a financial market is", "How prices can change", "Why risk and patience matter"] },
+      { title: "Forex Markets", icon: "💱", category: "Beginner",
+        description: "Learn what currency pairs, pips, spreads, and leverage mean.",
+        points: ["Currency pairs and exchange rates", "Spreads and transaction costs", "Risks of leverage"] },
+      { title: "Cryptocurrency Basics", icon: "₿", category: "Beginner",
+        description: "Explore digital assets, exchanges, volatility, and safe learning practices.",
+        points: ["What cryptocurrencies are", "Volatility and uncertainty", "Common scams to avoid"] },
+      { title: "Bitcoin & Blockchain", icon: "🔗", category: "Beginner",
+        description: "Discover blockchain concepts and how Bitcoin transactions work.",
+        points: ["Blocks and transactions", "Wallets and private keys", "Network and custody risks"] },
+      { title: "Technical Analysis", icon: "📊", category: "Intermediate",
+        description: "Learn how charts, trends, support, and resistance are studied.",
+        points: ["Reading chart axes", "Trend and range concepts", "Limits of technical indicators"] },
+      { title: "Fundamental Analysis", icon: "📰", category: "Intermediate",
+        description: "Study economic information and company or asset fundamentals.",
+        points: ["Economic indicators", "Company information", "How news affects expectations"] },
+      { title: "Risk Management", icon: "🛡️", category: "Essential",
+        description: "Understand risk exposure, diversification, and why losses are possible.",
+        points: ["Risk and reward concepts", "Diversification and concentration", "Why no strategy guarantees success"] },
+      { title: "Trading Psychology", icon: "🧠", category: "Essential",
+        description: "Explore decision-making, patience, and emotional discipline.",
+        points: ["Recognising emotional decisions", "Creating a learning journal", "Avoiding impulsive behaviour"] },
+      { title: "Stocks & ETFs", icon: "🏢", category: "Beginner",
+        description: "Learn the basics of company shares and exchange-traded funds.",
+        points: ["What a share represents", "How funds differ from single stocks", "Fees and investment risks"] },
+      { title: "Commodities & Indices", icon: "🌐", category: "Beginner",
+        description: "Explore commodity markets and what market indices measure.",
+        points: ["Examples of commodities", "What an index measures", "Factors affecting prices"] },
+      { title: "Candlesticks & Chart Patterns", icon: "🕯️", category: "Intermediate",
+        description: "Read candle bodies, wicks, and common chart-pattern terminology.",
+        points: ["Open, high, low, and close", "Candle bodies and wicks", "Why patterns can fail"] },
+      { title: "Scam Awareness & Security", icon: "🔐", category: "Essential",
+        description: "Recognise unrealistic promises, phishing, and unsafe online offers.",
+        points: ["Warning signs of fraud", "Protecting accounts and devices", "Checking claims before trusting them"] },
+      { title: "DeFi & Digital Assets", icon: "🧩", category: "Intermediate",
+        description: "Learn introductory concepts behind decentralised finance.",
+        points: ["Smart contracts in simple terms", "Protocol and technical risks", "Why yields may be unsustainable"] },
+      { title: "Paper Trading & Simulations", icon: "📝", category: "Practice",
+        description: "Learn with hypothetical examples before considering real money.",
+        points: ["Using a simulated balance", "Recording hypothetical decisions", "Reviewing outcomes without risking money"] }
+    ];
+
+    const $ = id => document.getElementById(id);
+    const pageNames = [
+      "home", "courses", "lesson", "practice", "apply", "mission",
+      "dashboard", "login", "signup", "contact", "privacy", "terms"
+    ];
+
+    let currentCourse = 0;
+    let currentUser = null;
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizAnswered = false;
+
+    // =========================================================
+    // MENU: right-side drawer, outside click closes it.
+    // =========================================================
+    function openMenu() {
+      $("sideMenu").classList.add("open");
+      $("menuBackdrop").hidden = false;
+      $("menuToggle").setAttribute("aria-expanded", "true");
+      $("sideMenu").setAttribute("aria-hidden", "false");
+      $("menuToggle").setAttribute("aria-label", "Close navigation menu");
+    }
+
+    function closeMenu() {
+      $("sideMenu").classList.remove("open");
+      $("menuBackdrop").hidden = true;
+      $("menuToggle").setAttribute("aria-expanded", "false");
+      $("sideMenu").setAttribute("aria-hidden", "true");
+      $("menuToggle").setAttribute("aria-label", "Open navigation menu");
+    }
+
+    $("menuToggle").addEventListener("click", () => {
+      $("sideMenu").classList.contains("open") ? closeMenu() : openMenu();
     });
 
-    function showPage(pageName) {
-      const target = document.getElementById("page-" + pageName);
+    $("closeMenu").addEventListener("click", closeMenu);
+    $("menuBackdrop").addEventListener("click", closeMenu);
 
-      if (!target) {
-        pageName = "home";
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMenu();
+    });
+
+    // Close when clicking outside both the menu and menu button.
+    document.addEventListener("click", event => {
+      if (!$("sideMenu").classList.contains("open")) return;
+      if (!$("sideMenu").contains(event.target) &&
+          !$("menuToggle").contains(event.target)) {
+        closeMenu();
       }
+    });
+
+    // =========================================================
+    // PAGE NAVIGATION: show one page at a time.
+    // =========================================================
+    function showPage(name) {
+      if (!pageNames.includes(name)) name = "home";
 
       document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
+        page.classList.toggle("active", page.id === "page-" + name);
       });
 
-      document.getElementById("page-" + pageName).classList.add("active");
-
-      menuLinks.forEach(link => {
-        link.classList.toggle("active", link.dataset.page === pageName);
+      document.querySelectorAll("[data-page]").forEach(button => {
+        if (button.matches("#menuLinks button")) {
+          button.classList.toggle("active", button.dataset.page === name);
+        }
       });
 
       closeMenu();
-      window.scrollTo({ top: 0, behavior: "instant" });
+      window.scrollTo({ top: 0, behavior: "auto" });
 
-      if (pageName === "dashboard") {
-        updateDashboard();
-      }
-
-      if (pageName === "apply") {
-        prefillApplication();
-      }
-
-      history.replaceState(null, "", "#" + pageName);
+      if (name === "dashboard") updateDashboard();
+      if (name === "login" || name === "signup") updateAccountButton();
     }
 
-    menuLinks.forEach(link => {
-      link.addEventListener("click", () => showPage(link.dataset.page));
+    document.addEventListener("click", event => {
+      const control = event.target.closest("[data-page]");
+      if (!control) return;
+      event.preventDefault();
+      showPage(control.dataset.page);
     });
 
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-      link.addEventListener("click", event => {
-        const pageName = link.getAttribute("href").slice(1);
-        if (document.getElementById("page-" + pageName)) {
-          event.preventDefault();
-          showPage(pageName);
-        }
-      });
+    $("accountButton").addEventListener("click", () => {
+      showPage(currentUser ? "dashboard" : "login");
     });
 
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // --------------------------------------------
+    // =========================================================
     // COURSES
-    // --------------------------------------------
+    // =========================================================
+    function renderCourses() {
+      const cardHTML = course => `
+        <article class="card">
+          <div class="card-icon">${course.icon}</div>
+          <p class="eyebrow">${course.category}</p>
+          <h3>${escapeHTML(course.title)}</h3>
+          <p>${escapeHTML(course.description)}</p>
+          <button class="btn btn-primary" data-course="${courses.indexOf(course)}">
+            Start Learning →
+          </button>
+        </article>`;
 
-    const courses = [
-      {
-        title: "Trading Fundamentals",
-        category: "Beginner",
-        emoji: "📘",
-        image: "photo-1454165804606-c3d57bc86b40",
-        description: "Learn market basics, orders, price movements, and essential terminology."
-      },
-      {
-        title: "Forex Markets",
-        category: "Currencies",
-        emoji: "💱",
-        image: "photo-1611974789855-9c2a0a7236a3",
-        description: "Understand currency pairs, exchange rates, spreads, and leverage risks."
-      },
-      {
-        title: "Cryptocurrency Basics",
-        category: "Crypto",
-        emoji: "₿",
-        image: "photo-1621761191319-c6fb62004040",
-        description: "Explore digital currencies, crypto exchanges, volatility, and security."
-      },
-      {
-        title: "Bitcoin & Blockchain",
-        category: "Digital Assets",
-        emoji: "🔗",
-        image: "photo-1518546305927-5a555bb7020d",
-        description: "Discover blockchain concepts, wallets, public networks, and transactions."
-      },
-      {
-        title: "Technical Analysis",
-        category: "Charts",
-        emoji: "📊",
-        image: "photo-1642790106117-e829e14a795f",
-        description: "Study charts, trends, indicators, support, and resistance."
-      },
-      {
-        title: "Fundamental Analysis",
-        category: "Research",
-        emoji: "🔎",
-        image: "photo-1460925895917-afdab827c52f",
-        description: "Explore economic indicators, company information, and market news."
-      },
-      {
-        title: "Risk Management",
-        category: "Essential Skills",
-        emoji: "🛡️",
-        image: "photo-1450101499163-c8848c66ca85",
-        description: "Learn about uncertainty, position sizing concepts, and risk limits."
-      },
-      {
-        title: "Trading Psychology",
-        category: "Mindset",
-        emoji: "🧠",
-        image: "photo-1506784983877-45594efa4cbe",
-        description: "Understand patience, discipline, emotions, and decision-making."
-      },
-      {
-        title: "Stocks & ETFs",
-        category: "Investing",
-        emoji: "🏢",
-        image: "photo-1486406146926-c627a92ad1ab",
-        description: "Learn what shares and exchange-traded funds are and how they differ."
-      },
-      {
-        title: "Commodities & Indices",
-        category: "Markets",
-        emoji: "🌐",
-        image: "photo-1500382017468-9049fed747ef",
-        description: "Explore market indices and commodities such as gold and agricultural goods."
-      },
-      {
-        title: "Candlesticks & Chart Patterns",
-        category: "Charts",
-        emoji: "🕯️",
-        image: "photo-1535320903710-d993d3d77d29",
-        description: "Identify common chart formations and learn their limitations."
-      },
-      {
-        title: "Scam Awareness & Security",
-        category: "Safety",
-        emoji: "🔐",
-        image: "photo-1563013544-824ae1b704d3",
-        description: "Recognize suspicious promises, fake platforms, and common online scams."
-      },
-      {
-        title: "DeFi & Digital Assets",
-        category: "Advanced Concepts",
-        emoji: "🌍",
-        image: "photo-1639762681485-074b7f938ba0",
-        description: "Learn basic decentralized finance concepts and their associated risks."
-      },
-      {
-        title: "Paper Trading & Simulations",
-        category: "Practice",
-        emoji: "🎮",
-        image: "photo-1516321318423-f06f85e504b3",
-        description: "Practise decision-making in hypothetical scenarios without real money."
-      }
-    ];
+      $("homeCourses").innerHTML = courses.slice(0, 3).map(cardHTML).join("");
+      $("allCourses").innerHTML = courses.map(cardHTML).join("");
 
-    const courseGrid = document.getElementById("courseGrid");
-    const appCourse = document.getElementById("appCourse");
+      $("appCourse").innerHTML = courses.map((course, index) =>
+        `<option value="${index}">${escapeHTML(course.title)}</option>`
+      ).join("");
+      $("totalCount").textContent = courses.length;
+      $("year").textContent = new Date().getFullYear();
+    }
 
-    courses.forEach(course => {
-      const card = document.createElement("article");
-      card.className = "course-card";
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
 
-      const imageBox = document.createElement("div");
-      imageBox.className = "course-image";
-
-      const img = document.createElement("img");
-      img.src = "https://images.unsplash.com/" + course.image +
-        "?auto=format&fit=crop&w=700&q=80";
-      img.alt = course.title;
-      img.loading = "lazy";
-      img.onerror = () => {
-        img.style.display = "none";
-      };
-
-      const emoji = document.createElement("span");
-      emoji.className = "course-emoji";
-      emoji.textContent = course.emoji;
-      imageBox.append(img, emoji);
-
-      const body = document.createElement("div");
-      body.className = "course-body";
-
-      const tag = document.createElement("span");
-      tag.className = "course-tag";
-      tag.textContent = course.category;
-
-      const heading = document.createElement("h3");
-      heading.textContent = course.title;
-
-      const description = document.createElement("p");
-      description.textContent = course.description;
-
-      const button = document.createElement("button");
-      button.className = "btn btn-primary";
-      button.type = "button";
-      button.textContent = "Start Learning →";
-      button.addEventListener("click", () => openCourse(course.title));
-
-      body.append(tag, heading, description, button);
-      card.append(imageBox, body);
-      courseGrid.appendChild(card);
-
-      const option = document.createElement("option");
-      option.value = course.title;
-      option.textContent = course.title;
-      appCourse.appendChild(option);
+    document.addEventListener("click", event => {
+      const button = event.target.closest("[data-course]");
+      if (!button) return;
+      openCourse(Number(button.dataset.course));
     });
 
-    // --------------------------------------------
-    // DEMO ACCOUNT AND LOCAL PROGRESS
-    // --------------------------------------------
+    function openCourse(index) {
+      if (!Number.isInteger(index) || !courses[index]) return;
+      currentCourse = index;
+      const course = courses[index];
+      $("lessonTitle").textContent = course.icon + " " + course.title;
+      $("lessonDescription").textContent = course.description;
+      $("lessonPoints").innerHTML = course.points
+        .map(point => `<li>${escapeHTML(point)}</li>`).join("");
+      $("lessonStatus").textContent = "";
+      showPage("lesson");
+    }
 
-    const ACCOUNTS_KEY = "ngt_demo_accounts_v1";
+    $("completeLesson").addEventListener("click", () => {
+      if (!currentUser) {
+        $("lessonStatus").textContent = "Create an account or log in to save progress in this browser.";
+        $("lessonStatus").className = "notice error";
+        return;
+      }
+
+      const progress = getProgress(currentUser.email);
+      if (!progress.includes(currentCourse)) {
+        progress.push(currentCourse);
+        localStorage.setItem(progressKey(currentUser.email), JSON.stringify(progress));
+      }
+      $("lessonStatus").textContent = "Topic marked complete! Your browser-based progress has been updated.";
+      $("lessonStatus").className = "notice success";
+      updateDashboard();
+    });
+
+    // =========================================================
+    // DEMO AUTHENTICATION AND PROGRESS
+    // Do not use this localStorage demo for a public production site.
+    // =========================================================
+    const USERS_KEY = "ngt_demo_users_v1";
     const SESSION_KEY = "ngt_demo_session_v1";
 
-    function readAccounts() {
-      try {
-        return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || "{}");
-      } catch {
-        return {};
-      }
-    }
-
-    function readSession() {
-      try {
-        return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-      } catch {
-        return null;
-      }
-    }
-
-    function saveSession(email) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-    }
-
-    async function hashPassword(password) {
-      if (!window.crypto || !window.crypto.subtle) {
-        throw new Error("Secure password hashing is unavailable in this browser.");
-      }
-
-      const bytes = new TextEncoder().encode(password);
-      const hash = await crypto.subtle.digest("SHA-256", bytes);
-
-      return Array.from(new Uint8Array(hash))
-        .map(byte => byte.toString(16).padStart(2, "0"))
-        .join("");
-    }
-
-    function currentAccount() {
-      const session = readSession();
-      if (!session || !session.email) return null;
-      return readAccounts()[session.email] || null;
-    }
-
-    function updateHeader() {
-      const account = currentAccount();
-      const headerLogin = document.getElementById("headerLogin");
-      const menuUser = document.getElementById("menuUser");
-      const logoutBtn = document.getElementById("logoutBtn");
-
-      if (account) {
-        headerLogin.textContent = "My Dashboard";
-        headerLogin.onclick = () => showPage("dashboard");
-        menuUser.textContent = "Logged in as " + account.name;
-        logoutBtn.classList.remove("hidden");
-      } else {
-        headerLogin.textContent = "Login";
-        headerLogin.onclick = () => showPage("login");
-        menuUser.textContent = "You are browsing as a guest.";
-        logoutBtn.classList.add("hidden");
-      }
-    }
-
-    document.getElementById("signupForm").addEventListener("submit", async event => {
-      event.preventDefault();
-
-      const name = document.getElementById("signupName").value.trim();
-      const email = document.getElementById("signupEmail").value.trim().toLowerCase();
-      const password = document.getElementById("signupPassword").value;
-      const message = document.getElementById("signupMessage");
-
-      try {
-        const accounts = readAccounts();
-
-        if (accounts[email]) {
-          message.textContent = "An account with this email already exists in this browser. Please log in.";
-          return;
-        }
-
-        const passwordHash = await hashPassword(password);
-
-        accounts[email] = {
-          name,
-          email,
-          passwordHash,
-          createdAt: new Date().toISOString()
-        };
-
-        localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-        saveSession(email);
-        event.target.reset();
-
-        updateHeader();
-        updateDashboard();
-        showPage("dashboard");
-      } catch (error) {
-        message.textContent = error.message ||
-          "Unable to create a demo account in this browser.";
-      }
-    });
-
-    document.getElementById("loginForm").addEventListener("submit", async event => {
-      event.preventDefault();
-
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const message = document.getElementById("loginMessage");
-
-      try {
-        const account = readAccounts()[email];
-
-        if (!account || account.passwordHash !== await hashPassword(password)) {
-          message.textContent = "Email or password is incorrect for this browser's demo accounts.";
-          return;
-        }
-
-        saveSession(email);
-        event.target.reset();
-        updateHeader();
-        updateDashboard();
-        showPage("dashboard");
-      } catch (error) {
-        message.textContent = error.message ||
-          "Unable to log in. Please try again.";
-      }
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", logout);
-
-    function logout() {
-      localStorage.removeItem(SESSION_KEY);
-      updateHeader();
-      showPage("home");
+    function readUsers() {
+      try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}"); }
+      catch { return {}; }
     }
 
     function progressKey(email) {
-      return "ngt_progress_" + email;
+      return "ngt_progress_" + email.toLowerCase();
     }
 
-    function readProgress() {
-      const account = currentAccount();
-      if (!account) return null;
-
+    function getProgress(email) {
       try {
-        return JSON.parse(localStorage.getItem(progressKey(account.email)) || "null");
-      } catch {
-        return null;
-      }
+        const list = JSON.parse(localStorage.getItem(progressKey(email)) || "[]");
+        return Array.isArray(list) ? list.filter(index => courses[index]) : [];
+      } catch { return []; }
     }
 
-    function saveProgress(courseTitle, completed) {
-      const account = currentAccount();
-      if (!account) return;
+    function updateAccountButton() {
+      $("accountButton").textContent = currentUser ? "My Dashboard" : "Log In";
+    }
 
-      localStorage.setItem(progressKey(account.email), JSON.stringify({
-        course: courseTitle,
-        completed,
-        updatedAt: new Date().toISOString()
-      }));
-
+    function setCurrentUser(user) {
+      currentUser = { name: user.name, email: user.email };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      updateAccountButton();
       updateDashboard();
     }
 
-    function openCourse(title) {
-      const account = currentAccount();
+    $("signupForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = $("signupName").value.trim();
+      const email = $("signupEmail").value.trim().toLowerCase();
+      const password = $("signupPassword").value;
 
-      if (!account) {
-        showPage("login");
-        document.getElementById("loginMessage").textContent =
-          "Log in first to save your learning progress, or create a demo account.";
+      if (name.length < 2) {
+        setStatus("signupStatus", "Please enter your full name.", false);
+        return;
+      }
+      if (password.length < 8) {
+        setStatus("signupStatus", "Use at least 8 characters for this demo password.", false);
         return;
       }
 
-      const oldProgress = readProgress();
-      const completed = oldProgress && oldProgress.course === title
-        ? oldProgress.completed
-        : 0;
-
-      saveProgress(title, completed);
-      showPage("dashboard");
-    }
-
-    function continueLearning() {
-      const progress = readProgress();
-
-      if (progress && progress.course) {
-        openCourse(progress.course);
-      } else {
-        showPage("courses");
+      const users = readUsers();
+      if (users[email]) {
+        setStatus("signupStatus", "An account with this email already exists in this browser. Try logging in.", false);
+        return;
       }
-    }
+
+      // Demonstration only: plaintext localStorage passwords are NOT secure.
+      // Never deploy this demo authentication for real user accounts.
+      users[email] = { name, email, password };
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      setCurrentUser(users[email]);
+      setStatus("signupStatus", "Account created in this browser. Welcome, " + name + "!", true);
+      showPage("dashboard");
+    });
+
+    $("loginForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const email = $("loginEmail").value.trim().toLowerCase();
+      const password = $("loginPassword").value;
+      const user = readUsers()[email];
+
+      if (!user || user.password !== password) {
+        setStatus("loginStatus", "Email or password not recognised in this browser. Check details or create an account.", false);
+        return;
+      }
+
+      setCurrentUser(user);
+      setStatus("loginStatus", "Welcome back, " + user.name + "!", true);
+      showPage("dashboard");
+    });
+
+    $("logoutButton").addEventListener("click", () => {
+      currentUser = null;
+      sessionStorage.removeItem(SESSION_KEY);
+      updateAccountButton();
+      showPage("home");
+    });
 
     function updateDashboard() {
-      const account = currentAccount();
-      const guest = document.getElementById("guestDashboard");
-      const dashboard = document.getElementById("userDashboard");
-
-      if (!account) {
-        guest.classList.remove("hidden");
-        dashboard.classList.add("hidden");
+      if (!currentUser) {
+        $("welcomeHeading").textContent = "Welcome to your dashboard!";
+        $("welcomeMessage").textContent = "Log in or sign up to save your learning progress in this browser.";
+        $("completedCount").textContent = "0";
+        $("progressPercent").textContent = "0%";
+        $("progressFill").style.width = "0%";
+        $("completedList").innerHTML = "<li>Log in to see completed topics.</li>";
         return;
       }
 
-      guest.classList.add("hidden");
-      dashboard.classList.remove("hidden");
+      const progress = getProgress(currentUser.email);
+      const percent = Math.round((progress.length / courses.length) * 100);
 
-      document.getElementById("welcomeName").textContent = account.name;
+      $("welcomeHeading").textContent = "Welcome back, " + currentUser.name + "! 👋";
+      $("welcomeMessage").textContent = "Your learning journey continues. Small, consistent steps build knowledge.";
+      $("completedCount").textContent = progress.length;
+      $("progressPercent").textContent = percent + "%";
+      $("progressFill").style.width = percent + "%";
+      $("progressMessage").textContent =
+        percent === 100 ? "You've marked every topic complete. Keep reviewing what you've learned!" :
+        "You've completed " + progress.length + " of " + courses.length + " topics. Keep learning at your own pace.";
 
-      const progress = readProgress();
-      const courseText = document.getElementById("progressCourse");
-      const progressFill = document.getElementById("progressFill");
-      const progressLabel = document.getElementById("progressLabel");
-      const progressLessons = document.getElementById("progressLessons");
-      const resumeText = document.getElementById("resumeText");
-      const resumeButton = document.getElementById("resumeButton");
-
-      if (progress && progress.course) {
-        const percent = Math.min(100, Math.max(0, progress.completed * 20));
-
-        courseText.textContent = "Current course: " + progress.course;
-        progressFill.style.width = percent + "%";
-        progressLabel.textContent = percent + "% complete";
-        progressLessons.textContent = progress.completed + " of 5 lessons";
-        resumeText.textContent = "Continue studying: " + progress.course;
-        resumeButton.textContent = progress.completed >= 5
-          ? "Review Course"
-          : "Continue Course";
-      } else {
-        courseText.textContent = "You have not started a course yet.";
-        progressFill.style.width = "0%";
-        progressLabel.textContent = "0% complete";
-        progressLessons.textContent = "0 of 5 lessons";
-        resumeText.textContent = "Choose a course to begin your learning journey.";
-        resumeButton.textContent = "Explore Courses";
-      }
+      $("completedList").innerHTML = progress.length
+        ? progress.map(index => `<li>${escapeHTML(courses[index].title)}</li>`).join("")
+        : "<li>No topics completed yet. Start with a course!</li>";
     }
 
-    function prefillApplication() {
-      const account = currentAccount();
-      if (account) {
-        document.getElementById("appName").value = account.name;
-        document.getElementById("appEmail").value = account.email;
-      }
+    try {
+      const session = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+      if (session && readUsers()[session.email]) currentUser = session;
+    } catch { currentUser = null; }
+
+    // =========================================================
+    // APPLICATION FORM: browser demo, not sent to an administrator.
+    // =========================================================
+    $("applicationForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const application = {
+        name: $("appName").value.trim(),
+        email: $("appEmail").value.trim(),
+        course: courses[Number($("appCourse").value)]?.title || "",
+        reason: $("appReason").value.trim(),
+        date: new Date().toISOString()
+      };
+
+      const saved = JSON.parse(localStorage.getItem("ngt_applications_demo") || "[]");
+      saved.push(application);
+      localStorage.setItem("ngt_applications_demo", JSON.stringify(saved));
+
+      setStatus("applicationStatus",
+        "Application saved in this browser demo. It has NOT been sent to the website administrator.", true);
+      $("applicationForm").reset();
+    });
+
+    // =========================================================
+    // CONTACT FORM: EmailJS sends the email once configured.
+    // Configure the template with these variables:
+    // {{from_name}}, {{reply_to}}, {{subject}}, {{message}}, {{to_email}}
+    // =========================================================
+    function setStatus(id, message, success) {
+      const element = $(id);
+      element.textContent = message;
+      element.className = "notice " + (success ? "success" : "error");
     }
 
-    // --------------------------------------------
-    // COURSE PROGRESS DEMONSTRATION
-    // --------------------------------------------
+    $("contactForm").addEventListener("submit", async event => {
+      event.preventDefault();
 
-    function continueLearning() {
-      const progress = readProgress();
+      const button = $("sendMessageButton");
+      const name = $("contactName").value.trim();
+      const replyTo = $("contactEmail").value.trim();
+      const subject = $("contactSubject").value.trim();
+      const message = $("contactMessage").value.trim();
 
-      if (!progress || !progress.course) {
-        showPage("courses");
+      if (!name || !replyTo || !subject || !message) {
+        setStatus("contactStatus", "Please fill in every field before sending.", false);
         return;
       }
 
-      const lesson = Math.min(5, progress.completed + 1);
-      const next = confirm(
-        "Course: " + progress.course +
-        "\n\nDemo lesson " + lesson + " of 5." +
-        "\n\nPress OK to mark this lesson completed, or Cancel to leave progress unchanged."
-      );
-
-      if (next) {
-        saveProgress(progress.course, lesson);
-        updateDashboard();
-
-        if (lesson === 5) {
-          alert("Well done! You completed this demo progress track.");
-        } else {
-          alert("Lesson saved! Your progress is now " + (lesson * 20) + "%.");
-        }
+      if (!emailConfigured || !window.emailjs) {
+        setStatus(
+          "contactStatus",
+          "Email sending is not configured yet. Add your EmailJS public key, service ID, and template ID in the code. No email has been sent. You can email " + SUPPORT_EMAIL + " directly using the link above.",
+          false
+        );
+        return;
       }
-    }
 
-    document.getElementById("applicationForm").addEventListener("submit", event => {
-      event.preventDefault();
+      button.disabled = true;
+      button.textContent = "Sending...";
+      setStatus("contactStatus", "Sending your message. Please wait...", true);
 
-      document.getElementById("applicationMessage").textContent =
-        "Demo only: your application has not been sent to an administrator yet. " +
-        "The next step is connecting a backend or email service.";
-
-      event.target.reset();
-      prefillApplication();
-    });
-
-    // --------------------------------------------
-    // SUPPORT EMAIL
-    // --------------------------------------------
-
-    function copySupportEmail() {
-      const message = document.getElementById("copyMessage");
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText("gisamanav@gmail.com")
-          .then(() => message.textContent = "Email address copied.")
-          .catch(() => message.textContent = "Please copy: gisamanav@gmail.com");
-      } else {
-        message.textContent = "Please copy: gisamanav@gmail.com";
-      }
-    }
-
-    document.getElementById("supportForm").addEventListener("submit", event => {
-      event.preventDefault();
-
-      const name = document.getElementById("supportName").value.trim();
-      const subject = document.getElementById("supportSubject").value.trim();
-      const body = document.getElementById("supportMessage").value.trim();
-
-      const emailBody = "From: " + name + "\n\n" + body;
-      const mailto = "mailto:gisamanav@gmail.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(emailBody);
-
-      window.location.href = mailto;
-    });
-
-    // --------------------------------------------
-    // EDUCATIONAL QUIZ
-    // --------------------------------------------
-
-    const quizQuestions = [
-      {
-        question: "What is a paper-trading account mainly used for?",
-        options: [
-          "Practising with simulated trades",
-          "Guaranteeing a profit",
-          "Avoiding all market risk"
-        ],
-        correct: 0,
-        explanation: "Correct! Paper trading lets learners practise with simulated trades, but it cannot reproduce every real-market condition."
-      },
-      {
-        question: "What does risk management help a learner understand?",
-        options: [
-          "How to guarantee profits",
-          "How to recognise and manage potential losses",
-          "How to predict every price movement"
-        ],
-        correct: 1,
-        explanation: "Correct! Risk management focuses on understanding and limiting exposure; it cannot eliminate risk."
-      },
-      {
-        question: "What should you think about before trusting an online trading offer?",
-        options: [
-          "Only its promised returns",
-          "Whether it looks exciting",
-          "Its credibility, risks, and warning signs"
-        ],
-        correct: 2,
-        explanation: "Correct! Check credibility carefully and be cautious of guaranteed-return promises."
-      }
-    ];
-
-    let quizIndex = 0;
-
-    function startQuiz() {
-      quizIndex = 0;
-      renderQuiz();
-      document.getElementById("quizBox").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function renderQuiz() {
-      const item = quizQuestions[quizIndex];
-      document.getElementById("quizQuestion").textContent = item.question;
-      document.getElementById("quizFeedback").textContent = "";
-
-      const options = document.getElementById("quizOptions");
-      options.replaceChildren();
-
-      item.options.forEach((option, index) => {
-        const button = document.createElement("button");
-        button.className = "btn btn-secondary";
-        button.type = "button";
-        button.textContent = option;
-
-        button.addEventListener("click", () => {
-          document.getElementById("quizFeedback").textContent =
-            index === item.correct
-              ? item.explanation
-              : "Not quite. Review the question and try again.";
-
-          if (index === item.correct) {
-            options.replaceChildren();
-
-            const nextButton = document.createElement("button");
-            nextButton.className = "btn btn-primary";
-            nextButton.textContent = quizIndex < quizQuestions.length - 1
-              ? "Next Question →"
-              : "Finish Quiz";
-
-            nextButton.onclick = () => {
-              if (quizIndex < quizQuestions.length - 1) {
-                quizIndex++;
-                renderQuiz();
-              } else {
-                document.getElementById("quizQuestion").textContent =
-                  "Quiz complete! Keep practising and learning.";
-                document.getElementById("quizFeedback").textContent =
-                  "Remember: understanding risk is part of learning about markets.";
-                options.replaceChildren();
-              }
-            };
-
-            options.appendChild(nextButton);
+      try {
+        const result = await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            from_name: name,
+            reply_to: replyTo,
+            subject: subject,
+            message: message,
+            to_email: SUPPORT_EMAIL
           }
-        });
+        );
 
-        options.appendChild(button);
+        if (result.status >= 200 && result.status < 300) {
+          setStatus("contactStatus",
+            "Message sent successfully to the email service! Please check your inbox. If it does not arrive, check your EmailJS service and spam folder.",
+            true);
+          $("contactForm").reset();
+        } else {
+          throw new Error("The email service did not confirm acceptance.");
+        }
+      } catch (error) {
+        console.error("Contact form send failed:", error);
+        setStatus("contactStatus",
+          "Sorry, the message could not be sent. Please check the EmailJS configuration and try again, or email " + SUPPORT_EMAIL + " directly.",
+          false);
+      } finally {
+        button.disabled = false;
+        button.textContent = "✉️ Send Message";
+      }
+    });
+
+    // =========================================================
+    // PRACTICE QUIZ
+    // =========================================================
+    const quiz = [
+      {
+        q: "What is the main purpose of risk management?",
+        options: ["Guarantee a profit", "Understand and limit potential losses", "Predict every price move", "Remove all uncertainty"],
+        answer: 1,
+        explanation: "Risk management helps people understand and manage exposure. It cannot eliminate risk or guarantee profits."
+      },
+      {
+        q: "What does a candlestick chart commonly display?",
+        options: ["Only a company's annual profit", "Open, high, low, and close prices", "Guaranteed future prices", "Only trading fees"],
+        answer: 1,
+        explanation: "A standard candle represents open, high, low, and close prices for a selected time period."
+      },
+      {
+        q: "What is paper trading?",
+        options: ["Borrowing money to trade", "Practising with simulated trades", "Buying paper certificates", "A guaranteed investment"],
+        answer: 1,
+        explanation: "Paper trading uses hypothetical trades to practise without placing those trades with real money."
+      },
+      {
+        q: "Which statement about high returns is most accurate?",
+        options: ["High returns are guaranteed", "All online trading groups are trustworthy", "Higher potential returns can involve higher risk", "Losses cannot happen if you use charts"],
+        answer: 2,
+        explanation: "No strategy guarantees profit. Be cautious of anyone promising certain or unusually high returns."
+      },
+      {
+        q: "What should you do with a message promising guaranteed trading profits?",
+        options: ["Send money immediately", "Share your password", "Check the claims and watch for scam signs", "Trust it because it looks professional"],
+        answer: 2,
+        explanation: "Guaranteed-profit claims are a major warning sign. Verify independently and never share passwords or recovery keys."
+      }
+    ];
+
+    function renderQuestion() {
+      const item = quiz[quizIndex];
+      quizAnswered = false;
+      $("quizQuestion").textContent = (quizIndex + 1) + ". " + item.q;
+      $("quizOptions").innerHTML = item.options.map((option, index) =>
+        `<button type="button" class="quiz-option" data-answer="${index}">${String.fromCharCode(65 + index)}. ${escapeHTML(option)}</button>`
+      ).join("");
+      $("quizFeedback").textContent = "Choose an answer.";
+      $("quizFeedback").className = "notice";
+      $("quizScore").textContent = quizScore;
+      $("quizTotal").textContent = quiz.length;
+    }
+
+    $("quizOptions").addEventListener("click", event => {
+      const button = event.target.closest("[data-answer]");
+      if (!button || quizAnswered) return;
+      quizAnswered = true;
+
+      const chosen = Number(button.dataset.answer);
+      const item = quiz[quizIndex];
+
+      if (chosen === item.answer) {
+        quizScore++;
+        setStatus("quizFeedback", "Correct! " + item.explanation, true);
+      } else {
+        setStatus("quizFeedback", "Not quite. " + item.explanation, false);
+      }
+
+      $("quizScore").textContent = quizScore;
+      $("quizOptions").querySelectorAll("button").forEach(option => {
+        option.disabled = true;
       });
-    }
+    });
 
-    const motivations = [
-      "Every expert was once a beginner. Keep asking questions.",
-      "Progress comes from consistent learning, not rushing.",
-      "Understanding risk is just as important as understanding opportunity.",
-      "Learn the concept, practise patiently, and reflect on what you discover.",
-      "Your goal today is to learn something new — not to chase a quick profit."
-    ];
+    $("nextQuestion").addEventListener("click", () => {
+      quizIndex++;
+      if (quizIndex >= quiz.length) {
+        $("quizQuestion").textContent = "Quiz complete!";
+        $("quizOptions").innerHTML = "";
+        setStatus("quizFeedback",
+          "Your score: " + quizScore + " out of " + quiz.length + ". Review the topics and try again to practise.",
+          true);
+        return;
+      }
+      renderQuestion();
+    });
 
-    function newMotivation() {
-      const index = Math.floor(Math.random() * motivations.length);
-      document.getElementById("motivationText").textContent = motivations[index];
-    }
+    $("resetQuiz").addEventListener("click", () => {
+      quizIndex = 0;
+      quizScore = 0;
+      renderQuestion();
+    });
 
-    // --------------------------------------------
-    // STARTUP
-    // --------------------------------------------
-
-    updateHeader();
+    // Initial page setup.
+    renderCourses();
+    renderQuestion();
+    updateAccountButton();
     updateDashboard();
-
-    const initialPage = window.location.hash.slice(1);
-    const validPages = [
-      "home", "courses", "practice", "apply", "mission",
-      "support", "privacy", "terms", "signup", "login", "dashboard"
-    ];
-
-    if (validPages.includes(initialPage)) {
-      showPage(initialPage);
-    } else {
-      showPage("home");
-    }
   </script>
 </body>
 </html>
