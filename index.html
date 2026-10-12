@@ -3,412 +3,370 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Next Gen Trader — learn trading, financial markets, chart analysis and risk management.">
-<title>Next Gen Trader | Learn. Practice. Grow.</title>
+<title>Next Gen Trader | GISA MANAV</title>
 
-<!-- Firebase: permanent accounts and shared course/application data -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-
-<!-- EmailJS: contact messages -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
-:root{
-  --blue:#1456a0;--blue2:#2678d9;--navy:#12335a;--gold:#f4b83f;
-  --green:#087d5a;--ink:#172b45;--muted:#64748b;--line:#e1e9f2;
-  --bg:#f5f8fc;--white:#fff;--shadow:0 10px 30px rgba(24,57,95,.08)
+:root {
+  --blue:#1557a6;
+  --blue-dark:#10345c;
+  --gold:#f2bd52;
+  --green:#087b59;
+  --ink:#1b2d43;
+  --muted:#69788b;
+  --background:#f5f7fa;
+  --line:#e1e7ee;
+  --white:#fff;
+  --shadow:0 8px 25px rgba(21,49,79,.07);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,sans-serif;line-height:1.6}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--background);color:var(--ink);line-height:1.6}
 button,input,textarea,select{font:inherit}
-button,a{touch-action:manipulation}
 button{cursor:pointer}
 a{color:var(--blue)}
-img{max-width:100%}
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 5%;background:#fff;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-size:clamp(15px,2vw,23px);font-weight:900;white-space:nowrap}
-.brand-icon{display:grid;place-items:center;width:42px;height:42px;background:#e8f2ff;border-radius:13px;font-size:25px}
-.brand small{display:block;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.3px}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 5%;background:white;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--blue-dark);font-size:clamp(14px,2vw,22px);font-weight:800;white-space:nowrap}
+.logo{width:43px;height:43px;display:grid;place-items:center;border-radius:12px;background:#eaf2ff}
+.logo svg{width:29px;height:29px}
+.brand small{display:block;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:.5px}
 .header-actions{display:flex;align-items:center;gap:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;border:1px solid transparent;border-radius:9px;font-weight:750;text-decoration:none;transition:.2s}
-.btn:hover{transform:translateY(-1px)}
-.primary{background:var(--blue2);color:white}
-.secondary{background:white;color:var(--blue);border-color:#cbd9e8}
-.gold{background:var(--gold);color:#1b2b40}
-.small-btn{padding:7px 10px;font-size:13px}
-.menu-toggle{display:grid;place-items:center;width:46px;height:44px;background:white;border:1px solid #d7e2ee;border-radius:10px}
-.bars{display:grid;gap:5px}
-.bars span{display:block;width:23px;height:3px;background:var(--blue);border-radius:4px}
-.menu-label{font-size:9px;color:var(--blue);font-weight:900}
-.backdrop{position:fixed;inset:68px 0 0;background:#142b45a6;z-index:59}
-.drawer{position:fixed;z-index:60;right:0;top:68px;width:min(350px,90vw);height:calc(100dvh - 68px);overflow:auto;padding:22px;background:white;box-shadow:-15px 10px 40px #152b4524;transform:translateX(105%);visibility:hidden;transition:.23s}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:7px;border:1px solid transparent;border-radius:8px;padding:10px 15px;text-decoration:none;font-weight:700;transition:background .2s}
+.btn:hover{filter:brightness(.96)}
+.primary{background:var(--blue);color:white}
+.secondary{background:white;color:var(--blue);border-color:#cbd7e5}
+.gold{background:var(--gold);color:#24364a}
+.menu-toggle{height:43px;width:44px;background:white;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center}
+.menu-lines{display:grid;gap:5px}
+.menu-lines span{height:2px;width:22px;background:var(--blue);display:block;border-radius:3px}
+.menu-word{font-size:9px;font-weight:800;color:var(--blue)}
+.drawer{position:fixed;right:0;top:65px;z-index:61;width:min(330px,90vw);height:calc(100dvh - 65px);overflow:auto;background:white;padding:20px;box-shadow:-10px 10px 30px #142c4520;transform:translateX(105%);visibility:hidden;transition:.2s}
 .drawer.open{transform:translateX(0);visibility:visible}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
-.navlist{display:grid;gap:7px}
-.navlist button{padding:12px;text-align:left;color:var(--ink);background:#f6f9fd;border:1px solid var(--line);border-radius:8px}
-.navlist button:hover,.navlist button.active{color:var(--blue);border-color:var(--blue2);background:#edf5ff}
-.muted{color:var(--muted)}
-main{min-height:70vh}
-.page{display:none;width:min(1200px,91%);margin:auto;padding:35px 0 65px}
-.page.active{display:block;animation:appear .2s ease}
-@keyframes appear{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
-.hero{min-height:440px;display:flex;align-items:center;padding:clamp(25px,5vw,65px);border-radius:20px;overflow:hidden;color:white;background:linear-gradient(90deg,rgba(15,36,61,.86),rgba(15,36,61,.26)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1900&q=85') center/cover}
-.hero-content{max-width:690px}
-.eyebrow{font-size:12px;letter-spacing:1.7px;font-weight:850;text-transform:uppercase;color:#1971c9}
-.hero .eyebrow{color:#ffcf67}
-h1{font-size:clamp(36px,5.5vw,62px);line-height:1.1;margin:15px 0}
-h2{font-size:clamp(27px,4vw,38px);line-height:1.2;margin:8px 0 12px}
-h3{line-height:1.3}
-.hero p{max-width:600px;color:#f0f5fc;font-size:17px}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.search-panel{display:flex;gap:8px;max-width:720px;padding:7px;background:white;border-radius:12px;box-shadow:0 8px 30px #0c20362e;margin-top:22px}
-.search-panel input{min-width:0;flex:1;border:0;outline:0;color:var(--ink);padding:10px}
-.quick-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
-.quick-tags button{color:white;background:#ffffff20;border:1px solid #ffffff6b;border-radius:20px;padding:5px 11px;font-size:12px}
-.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 34px}
-.benefit{display:flex;align-items:center;gap:12px;background:white;padding:18px;border:1px solid var(--line);border-radius:12px}
-.benefit-icon{font-size:25px}
-.benefit strong{display:block;font-size:14px}
-.benefit small{color:var(--muted);font-size:12px}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:34px 0 17px}
-.section-head p{margin:4px 0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-.card{min-width:0;background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-.card-body{padding:18px}
-.course-image{height:145px;display:grid;place-items:center;background:linear-gradient(135deg,#eaf3ff,#f9e8c7);font-size:48px}
-.pill{display:inline-block;background:#eaf4ff;color:#1456a0;padding:4px 9px;border-radius:20px;font-size:11px;font-weight:800}
-.card h3{margin:10px 0 5px}
-.card p{font-size:14px;color:var(--muted)}
-.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-.card-actions .btn{flex:1}
-.split{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;margin:28px 0}
-.feature-panel{padding:28px;border-radius:16px;background:#e8f2ff}
-.promo{padding:28px;color:white;border-radius:16px;background:linear-gradient(145deg,#12335a,#2475c9)}
-.promo p{color:#e0ebf8}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:22px 0}
-.stat{padding:18px;background:white;border:1px solid var(--line);border-radius:12px}
-.stat strong{display:block;font-size:28px;color:var(--blue)}
-.stat span{font-size:13px;color:var(--muted)}
-.form-card,.panel{padding:clamp(18px,3vw,30px);background:white;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}
-.form-card{max-width:760px}
-.field{margin-bottom:15px}
-label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
-input,textarea,select{width:100%;padding:12px;border:1px solid #cfdae7;border-radius:8px;background:white;color:var(--ink);outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--blue2);box-shadow:0 0 0 3px #2678d91c}
-textarea{min-height:130px;resize:vertical}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.notice{padding:12px;margin-top:12px;border-radius:8px;background:#f0f5fb;color:var(--muted);overflow-wrap:anywhere}
-.notice.success{background:#e9f8ef;color:#11653d}
-.notice.error{background:#fff0ef;color:#a72e29}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;background:white;font-size:13px}
-th,td{padding:11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-th{background:#f0f5fb}
-progress{width:100%;height:14px;accent-color:var(--green)}
-.quiz-option{display:block;width:100%;text-align:left;padding:12px;margin:8px 0;background:#f5f8fc;border:1px solid var(--line);border-radius:9px}
-.quiz-option:hover{border-color:var(--blue2)}
-footer{padding:28px 5%;background:#142d4c;color:white}
-.footer-inner{width:min(1200px,100%);margin:auto;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
-footer p{font-size:12px;color:#d3e0ef}
-.footer-links{display:flex;flex-wrap:wrap;gap:14px}
-.footer-links button{color:white;background:none;border:0;text-decoration:underline;font-size:13px}
+.backdrop{position:fixed;inset:65px 0 0;z-index:60;background:#132b4590}
 .hidden{display:none!important}
-@media(max-width:900px){.grid,.course-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.benefits{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:580px){.topbar{padding:10px 3%;gap:7px}.brand{font-size:13px;gap:6px}.brand-icon{width:34px;height:34px}.brand small{font-size:9px}.header-actions{gap:5px}.header-actions .btn{padding:9px;font-size:11px}.menu-toggle{width:42px;height:42px}.page{width:93%;padding-top:23px}.hero{min-height:430px;padding:22px}.hero p{font-size:15px}.search-panel{flex-wrap:wrap}.search-panel input{flex-basis:100%}.grid,.course-grid,.benefits,.form-grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.stats{grid-template-columns:repeat(2,1fr)}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.nav-list{display:grid;gap:7px}
+.nav-list button{padding:12px;text-align:left;border:1px solid var(--line);border-radius:8px;background:#f8fafc;color:var(--ink)}
+.nav-list button:hover{background:#edf4ff;color:var(--blue)}
+main{min-height:70vh}
+.page{display:none;width:min(1180px,91%);margin:auto;padding:32px 0 55px}
+.page.active{display:block;animation:appear .18s ease}
+@keyframes appear{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{min-height:440px;display:flex;align-items:center;padding:clamp(25px,5vw,60px);border-radius:17px;color:white;background:linear-gradient(90deg,rgba(15,36,61,.85),rgba(15,36,61,.27)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1900&q=85') center/cover}
+.hero-content{max-width:680px}
+.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+.hero .eyebrow{color:var(--gold)}
+h1{font-size:clamp(35px,5.5vw,59px);line-height:1.12;margin:14px 0}
+h2{font-size:clamp(27px,4vw,37px);line-height:1.2;margin:9px 0}
+h3{line-height:1.3}
+.hero p{font-size:17px;color:#f0f4fa;max-width:580px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.search-bar{display:flex;gap:8px;background:white;border-radius:10px;padding:7px;margin-top:23px;max-width:680px}
+.search-bar input{flex:1;min-width:0;border:0;outline:0;padding:10px}
+.search-bar button{white-space:nowrap}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 32px}
+.feature{background:white;padding:16px;border:1px solid var(--line);border-radius:10px}
+.feature strong{display:block;font-size:14px}
+.feature span{font-size:12px;color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:30px 0 16px}
+.section-head p{margin:4px 0;color:var(--muted)}
+.course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card{background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.course-image{height:145px;display:grid;place-items:center;background:#eaf2ff;font-size:47px}
+.card-body{padding:17px}
+.card h3{margin:8px 0 5px}
+.card p{color:var(--muted);font-size:14px}
+.pill{display:inline-block;border-radius:20px;background:#eaf2ff;color:var(--blue);padding:4px 9px;font-size:11px;font-weight:800}
+.card-actions{display:flex;gap:8px;margin-top:13px}
+.card-actions .btn{flex:1;padding:9px 10px;font-size:13px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:30px 0}
+.panel{background:white;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+.light-panel{background:#eaf2ff}
+.dark-panel{background:var(--blue-dark);color:white}
+.dark-panel p{color:#dce8f5}
+.form-card{max-width:740px;background:white;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+.field{margin-bottom:15px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #ccd7e3;border-radius:8px;background:white;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1557a619}
+textarea{min-height:120px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.muted{color:var(--muted)}
+.notice{padding:12px;border-radius:8px;margin-top:12px;background:#eff4fa;color:var(--muted);overflow-wrap:anywhere}
+.notice.success{background:#e7f7ed;color:#14673d}
+.notice.error{background:#fff0ef;color:#a32e29}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.stat{padding:17px;background:white;border:1px solid var(--line);border-radius:10px}
+.stat strong{display:block;font-size:27px;color:var(--blue)}
+.stat span{font-size:12px;color:var(--muted)}
+progress{width:100%;height:14px;accent-color:var(--green)}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#eff4fa}
+.quiz-option{display:block;width:100%;text-align:left;padding:12px;margin:8px 0;background:#f7f9fc;border:1px solid var(--line);border-radius:8px}
+.quiz-option:hover{border-color:var(--blue)}
+footer{padding:22px 5%;background:var(--blue-dark);color:white}
+footer p{font-size:12px;color:#d5e2ef;margin:4px 0}
+@media(max-width:850px){.course-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.features{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}}
+@media(max-width:560px){.topbar{padding:9px 3%;gap:6px}.brand{font-size:12px;gap:6px}.brand small{font-size:9px}.logo{width:34px;height:34px}.header-actions{gap:5px}.header-actions .btn{font-size:11px;padding:9px}.menu-toggle{width:40px;height:41px}.page{width:93%;padding-top:22px}.hero{min-height:420px;padding:22px}.hero p{font-size:15px}.course-grid,.features,.form-grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.search-bar{flex-wrap:wrap}.search-bar input{flex-basis:100%}.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-
 <body>
+
 <header class="topbar">
   <a href="#home" class="brand" data-page="home">
-    <span class="brand-icon">🎓</span>
-    <span>NEXT GEN TRADER<small>Learn Today. Trade More Wisely.</small></span>
+    <span class="logo">
+      <svg viewBox="0 0 40 40" fill="none" aria-label="Next Gen Trader logo">
+        <path d="M20 3 35 11.5 35 28.5 20 37 5 28.5 5 11.5Z" stroke="#1557a6" stroke-width="2.5"/>
+        <path d="M11 25V15L29 25V15" stroke="#1557a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>NEXT GEN TRADER<small>Learn. Understand. Improve.</small></span>
   </a>
   <div class="header-actions">
     <button class="btn secondary" data-page="login">Log In</button>
     <button class="btn primary" data-page="signup">Sign Up</button>
-    <button id="menuToggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false">
-      <span><span class="bars"><span></span><span></span><span></span></span><span class="menu-label">MENU</span></span>
+    <button id="menuToggle" class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+      <span><span class="menu-lines"><span></span><span></span><span></span></span><span class="menu-word">MENU</span></span>
     </button>
   </div>
 </header>
 
 <div id="backdrop" class="backdrop hidden"></div>
-<nav id="drawer" class="drawer" aria-label="Website menu">
-  <div class="drawer-head"><strong>Explore Next Gen Trader</strong><button id="closeMenu" class="btn secondary small-btn">✕</button></div>
-  <div class="navlist" id="navlist">
-    <button data-page="home">🏠 Home</button>
-    <button data-page="courses">📚 Browse all courses</button>
-    <button data-page="practice">🧠 Practice quiz</button>
-    <button data-page="apply">📝 Course application</button>
-    <button data-page="dashboard">📊 My learning</button>
-    <button data-page="mission">🎯 About us</button>
-    <button data-page="contact">✉️ Support & contact</button>
-    <button data-page="privacy">🔒 Privacy</button>
-    <button data-page="terms">📋 Terms & risk disclaimer</button>
-    <button data-page="login">🔐 Log in</button>
-    <button data-page="signup">✨ Create account</button>
+<nav id="drawer" class="drawer" aria-label="Main navigation">
+  <div class="drawer-head"><strong>Navigation</strong><button id="closeMenu" class="btn secondary">✕</button></div>
+  <div class="nav-list">
+    <button data-page="home">Home</button>
+    <button data-page="courses">All Courses</button>
+    <button data-page="practice">Practice Quiz</button>
+    <button data-page="apply">Apply for a Course</button>
+    <button data-page="dashboard">My Learning</button>
+    <button data-page="about">About GISA MANAV</button>
+    <button data-page="contact">Support & Contact</button>
+    <button data-page="privacy">Privacy</button>
+    <button data-page="terms">Terms & Disclaimer</button>
+    <button data-page="login">Log In</button>
+    <button data-page="signup">Create Account</button>
   </div>
-  <p class="muted">Click outside this panel, press Escape, or choose a page to close the menu.</p>
 </nav>
 
 <main>
-<!-- HOME -->
 <section id="page-home" class="page active">
   <div class="hero">
     <div class="hero-content">
-      <span class="eyebrow">Your knowledge is your first investment</span>
-      <h1>Understand the markets.<br><span style="color:#ffd16b">Build your skills.</span></h1>
-      <p>Learn trading concepts, read charts, understand risk and practise with educational tools before making real-world decisions.</p>
+      <span class="eyebrow">Build your knowledge</span>
+      <h1>Understand the markets.<br><span style="color:#f2bd52">Learn with confidence.</span></h1>
+      <p>Explore financial markets, learn to read charts and understand risk through structured lessons and practice.</p>
       <div class="actions">
-        <button class="btn gold" data-page="courses">Explore Courses →</button>
-        <button class="btn secondary" data-page="practice">Try a Free Quiz</button>
+        <button class="btn gold" data-page="courses">Browse Courses</button>
+        <button class="btn secondary" data-page="practice">Try a Practice Quiz</button>
       </div>
-      <form id="heroSearch" class="search-panel">
-        <input id="homeSearch" placeholder="Search courses: forex, crypto, risk management…" aria-label="Search courses">
-        <button class="btn primary" type="submit">Search Courses</button>
+      <form id="homeSearchForm" class="search-bar">
+        <input id="homeSearch" placeholder="Search for a course…" aria-label="Search for a course">
+        <button class="btn primary" type="submit">Search</button>
       </form>
-      <div class="quick-tags">
-        <button data-search="Forex">Forex</button><button data-search="Crypto">Crypto</button>
-        <button data-search="Risk">Risk Management</button><button data-search="Charts">Charts</button>
-      </div>
     </div>
   </div>
 
-  <div class="benefits">
-    <div class="benefit"><span class="benefit-icon">📘</span><span><strong>Structured learning</strong><small>Start with the basics</small></span></div>
-    <div class="benefit"><span class="benefit-icon">🧩</span><span><strong>Learn by practice</strong><small>Test your knowledge</small></span></div>
-    <div class="benefit"><span class="benefit-icon">🛡️</span><span><strong>Risk awareness</strong><small>Understand uncertainty</small></span></div>
-    <div class="benefit"><span class="benefit-icon">📱</span><span><strong>Learn at your pace</strong><small>Mobile-friendly layout</small></span></div>
+  <div class="features">
+    <div class="feature"><strong>📘 Structured lessons</strong><span>Learn step by step</span></div>
+    <div class="feature"><strong>📊 Market knowledge</strong><span>Understand charts</span></div>
+    <div class="feature"><strong>🛡️ Risk awareness</strong><span>Learn before risking money</span></div>
+    <div class="feature"><strong>🧠 Practice quizzes</strong><span>Test what you learn</span></div>
   </div>
 
-  <div class="section-head">
-    <div><span class="eyebrow">Start here</span><h2>Popular learning topics</h2><p>Choose a course and continue learning one step at a time.</p></div>
-    <button class="btn secondary" data-page="courses">View All Courses →</button>
-  </div>
+  <div class="section-head"><div><h2>Courses to get you started</h2><p>Choose a topic that matches your learning goals.</p></div><button class="btn secondary" data-page="courses">All Courses →</button></div>
   <div id="popularCourses" class="course-grid"></div>
 
   <div class="split">
-    <div class="feature-panel">
-      <span class="eyebrow">A better way to begin</span>
-      <h2>Knowledge before risk.</h2>
-      <p>Learn how markets work, why prices move and how to recognise common scams. Start with education and simulations rather than risking money to learn.</p>
-      <button class="btn primary" data-page="practice">Try a practice quiz</button>
+    <div class="panel light-panel">
+      <span class="eyebrow">Learn responsibly</span>
+      <h2>Knowledge comes first.</h2>
+      <p>Understand market behaviour, recognise scams and practise with simulations before considering financial risk.</p>
+      <button class="btn primary" data-page="practice">Start Practising</button>
     </div>
-    <div class="promo">
-      <span class="eyebrow" style="color:#ffd16b">Your learning journey</span>
-      <h2>Every expert starts as a beginner.</h2>
-      <p>Create an account to track your learning progress across sessions. Your account is stored securely once Firebase is configured.</p>
-      <button class="btn gold" data-page="signup">Join Next Gen Trader →</button>
+    <div class="panel dark-panel">
+      <span class="eyebrow" style="color:#f2bd52">Your learning journey</span>
+      <h2>Progress starts with one lesson.</h2>
+      <p>Create an account to save your learning progress and keep track of completed courses.</p>
+      <button class="btn gold" data-page="signup">Create Account</button>
     </div>
-  </div>
-  <div class="section-head"><div><h2>Learning for the long term</h2><p>Our goal is to teach, not to promise profits.</p></div></div>
-  <div class="grid">
-    <div class="card"><div class="card-body"><h3>🎯 Clear learning goals</h3><p>Follow topics in a sensible order and track the subjects you complete.</p></div></div>
-    <div class="card"><div class="card-body"><h3>🔍 Think critically</h3><p>Learn to question unrealistic claims and understand that no trading method guarantees a profit.</p></div></div>
-    <div class="card"><div class="card-body"><h3>🌱 Keep improving</h3><p>Use practice questions and your course history to identify topics to revisit.</p></div></div>
   </div>
 </section>
 
-<!-- COURSE LIBRARY -->
 <section id="page-courses" class="page">
-  <span class="eyebrow">Course library</span><h2>Find your next topic</h2>
-  <p class="muted">Search by title, skill or category. All available courses are listed below.</p>
-  <div class="search-panel" style="max-width:none;border:1px solid var(--line);box-shadow:none">
-    <input id="courseSearch" placeholder="Search all courses…" aria-label="Search all courses">
-    <select id="categoryFilter" style="max-width:220px"><option value="all">All categories</option><option>Beginner</option><option>Intermediate</option><option>Essential</option><option>Practice</option></select>
+  <span class="eyebrow">Learning library</span><h2>All Courses</h2>
+  <p class="muted">Search by course name or select a category.</p>
+  <div class="search-bar" style="max-width:none;border:1px solid var(--line);box-shadow:none">
+    <input id="courseSearch" placeholder="Search courses…" aria-label="Search all courses">
+    <select id="categoryFilter" style="max-width:190px">
+      <option value="all">All categories</option><option>Beginner</option><option>Intermediate</option><option>Essential</option><option>Practice</option>
+    </select>
   </div>
-  <p id="courseCount" class="muted"></p>
-  <div id="allCourses" class="course-grid"></div>
-  <div id="noCourses" class="notice hidden">No courses match your search. Try another keyword or select All categories.</div>
+  <p id="courseCount" class="muted"></p><div id="allCourses" class="course-grid"></div>
+  <div id="noCourses" class="notice hidden">No courses found. Try a different search.</div>
 </section>
 
-<!-- LESSON -->
 <section id="page-lesson" class="page">
-  <button class="btn secondary" data-page="courses">← Back to courses</button>
+  <button class="btn secondary" data-page="courses">← Back to Courses</button>
   <div class="panel" style="margin-top:18px">
-    <span class="eyebrow" id="lessonCategory">Course lesson</span><h2 id="lessonTitle"></h2>
-    <p id="lessonDescription"></p><h3>What you will learn</h3><ul id="lessonPoints"></ul>
-    <p class="muted">This introductory outline is educational material. It is not a complete professional course or financial advice.</p>
-    <button id="completeLesson" class="btn primary">Mark course complete</button>
-    <div id="lessonStatus" class="notice" role="status"></div>
+    <span class="eyebrow" id="lessonCategory"></span><h2 id="lessonTitle"></h2><p id="lessonDescription"></p>
+    <h3>Learning points</h3><ul id="lessonPoints"></ul>
+    <p class="muted">This lesson outline is educational, not financial advice.</p>
+    <button id="completeLesson" class="btn primary">Mark Course Complete</button>
+    <div id="lessonStatus" class="notice"></div>
   </div>
 </section>
 
-<!-- PRACTICE -->
 <section id="page-practice" class="page">
-  <span class="eyebrow">Practice area</span><h2>Test your knowledge</h2>
-  <p class="muted">Choose an answer and read the explanation. The quiz does not involve real money.</p>
+  <span class="eyebrow">Knowledge check</span><h2>Practice Quiz</h2>
   <div class="form-card">
     <h3 id="quizQuestion"></h3><div id="quizOptions"></div>
-    <div id="quizFeedback" class="notice" role="status">Choose an answer to begin.</div>
+    <div id="quizFeedback" class="notice">Choose an answer.</div>
     <p>Score: <strong id="quizScore">0</strong> / <span id="quizTotal">0</span></p>
-    <button class="btn primary" id="nextQuestion">Next question →</button>
-    <button class="btn secondary" id="resetQuiz">Restart</button>
+    <button id="nextQuestion" class="btn primary">Next Question</button>
+    <button id="resetQuiz" class="btn secondary">Restart</button>
   </div>
 </section>
 
-<!-- APPLICATION -->
 <section id="page-apply" class="page">
-  <span class="eyebrow">Join a course</span><h2>Course application</h2>
-  <p class="muted">Applications are stored in the shared database after Firebase is configured. The administrator can review them.</p>
+  <span class="eyebrow">Course registration</span><h2>Apply for a Course</h2>
+  <p class="muted">Submit your application for administrator review.</p>
   <form id="applicationForm" class="form-card">
-    <div class="field"><label for="appName">Full name</label><input id="appName" required maxlength="100"></div>
-    <div class="field"><label for="appEmail">Email address</label><input id="appEmail" type="email" required maxlength="150"></div>
-    <div class="field"><label for="appCourse">Course</label><select id="appCourse" required></select></div>
-    <div class="field"><label for="appReason">Why would you like to study this course?</label><textarea id="appReason" required maxlength="1500"></textarea></div>
-    <button class="btn primary" type="submit">Submit application</button>
+    <div class="field"><label for="appName">Full Name</label><input id="appName" required maxlength="100"></div>
+    <div class="field"><label for="appEmail">Email Address</label><input id="appEmail" type="email" required maxlength="150"></div>
+    <div class="field"><label for="appCourse">Choose Course</label><select id="appCourse" required></select></div>
+    <div class="field"><label for="appReason">Why do you want to study this course?</label><textarea id="appReason" required maxlength="1500"></textarea></div>
+    <button class="btn primary" type="submit">Submit Application</button>
     <div id="applicationStatus" class="notice" role="status"></div>
   </form>
 </section>
 
-<!-- ACCOUNT -->
 <section id="page-login" class="page">
-  <span class="eyebrow">Welcome back</span><h2>Log in to your account</h2>
+  <span class="eyebrow">Your account</span><h2>Log In</h2>
   <form id="loginForm" class="form-card">
-    <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+    <div class="field"><label for="loginEmail">Email Address</label><input id="loginEmail" type="email" autocomplete="email" required></div>
     <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
-    <button class="btn primary" type="submit">Log in</button>
-    <p>Forgot your password? <button type="button" id="resetPassword" class="btn secondary small-btn">Reset by email</button></p>
-    <p>New here? <button type="button" class="btn secondary small-btn" data-page="signup">Create an account</button></p>
+    <button class="btn primary" type="submit">Log In</button>
+    <p><button id="resetPassword" type="button" class="btn secondary">Reset Password</button></p>
+    <p>Don't have an account? <button type="button" class="btn secondary" data-page="signup">Sign Up</button></p>
     <div id="loginStatus" class="notice" role="status"></div>
   </form>
 </section>
 
 <section id="page-signup" class="page">
-  <span class="eyebrow">Create your account</span><h2>Start learning today</h2>
+  <span class="eyebrow">Join the learning community</span><h2>Create an Account</h2>
   <form id="signupForm" class="form-card">
-    <div class="field"><label for="signupName">Full name</label><input id="signupName" required maxlength="100" autocomplete="name"></div>
-    <div class="field"><label for="signupEmail">Email address</label><input id="signupEmail" type="email" required autocomplete="email"></div>
-    <div class="field"><label for="signupPassword">Password (at least 8 characters)</label><input id="signupPassword" type="password" required minlength="8" autocomplete="new-password"></div>
-    <button class="btn primary" type="submit">Create account</button>
-    <p>Already registered? <button type="button" class="btn secondary small-btn" data-page="login">Log in</button></p>
+    <div class="field"><label for="signupName">Full Name</label><input id="signupName" autocomplete="name" required maxlength="100"></div>
+    <div class="field"><label for="signupEmail">Email Address</label><input id="signupEmail" type="email" autocomplete="email" required></div>
+    <div class="field"><label for="signupPassword">Create Password</label><input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required><small class="muted">Use at least 8 characters.</small></div>
+    <button class="btn primary" type="submit">Create Account</button>
+    <p>Already registered? <button type="button" class="btn secondary" data-page="login">Log In</button></p>
     <div id="signupStatus" class="notice" role="status"></div>
   </form>
 </section>
 
-<!-- DASHBOARD -->
 <section id="page-dashboard" class="page">
-  <span class="eyebrow">Personal learning</span><h2 id="welcomeHeading">My learning dashboard</h2>
-  <p id="welcomeText" class="muted">Log in to view your saved course progress.</p>
+  <span class="eyebrow">Your account</span><h2 id="welcomeHeading">My Learning</h2><p id="welcomeText" class="muted">Log in to view your progress.</p>
   <div class="stats">
-    <div class="stat"><strong id="dashCompleted">0</strong><span>Courses completed</span></div>
-    <div class="stat"><strong id="dashAvailable">14</strong><span>Available courses</span></div>
-    <div class="stat"><strong id="dashProgress">0%</strong><span>Completion progress</span></div>
-    <div class="stat"><strong id="dashApplications">0</strong><span>Your applications</span></div>
+    <div class="stat"><strong id="dashCompleted">0</strong><span>Completed Courses</span></div>
+    <div class="stat"><strong id="dashAvailable">14</strong><span>Available Courses</span></div>
+    <div class="stat"><strong id="dashProgress">0%</strong><span>Progress</span></div>
+    <div class="stat"><strong id="dashApplications">0</strong><span>Applications</span></div>
   </div>
-  <div class="panel"><h3>Your learning progress</h3><progress id="progressBar" max="100" value="0"></progress><p id="progressText" class="muted">Start a course to begin.</p><button class="btn primary" data-page="courses">Browse courses</button> <button id="logoutButton" class="btn secondary">Log out</button></div>
-  <div class="panel" style="margin-top:18px"><h3>Completed courses</h3><ul id="completedList"><li>No completed courses yet.</li></ul></div>
-  <div class="panel" style="margin-top:18px"><h3>My applications</h3><div id="myApplications" class="muted">Your submitted applications will appear here.</div></div>
+  <div class="panel"><h3>Course Progress</h3><progress id="progressBar" max="100" value="0"></progress><p id="progressText" class="muted"></p><button class="btn primary" data-page="courses">Browse Courses</button> <button id="logoutButton" class="btn secondary">Log Out</button></div>
+  <div class="panel" style="margin-top:18px"><h3>Completed Courses</h3><ul id="completedList"></ul></div>
+  <div class="panel" style="margin-top:18px"><h3>My Applications</h3><div id="myApplications"></div></div>
 </section>
 
-<!-- ADMIN: intentionally not listed in public navigation.
-     Visit yoursite/#admin. Firebase security rules must also protect the database. -->
-<section id="page-admin" class="page">
-  <span class="eyebrow">Private administration</span><h2>Administrator dashboard</h2>
-  <p class="muted">Manage courses, review applications, and monitor student activity. Only the configured administrator email can open this page in this interface. Database security rules are also required.</p>
-  <div id="adminStatus" class="notice" role="status">Checking administrator access…</div>
-  <div id="adminContent" class="hidden">
-    <div class="stats">
-      <div class="stat"><strong id="adminVisits">0</strong><span>Recorded page visits</span></div>
-      <div class="stat"><strong id="adminAccounts">0</strong><span>Registered accounts</span></div>
-      <div class="stat"><strong id="adminLogins">0</strong><span>Login events recorded</span></div>
-      <div class="stat"><strong id="adminLogouts">0</strong><span>Logout events recorded</span></div>
-    </div>
-    <div class="stats">
-      <div class="stat"><strong id="adminStudents">0</strong><span>Students in database</span></div>
-      <div class="stat"><strong id="adminApplications">0</strong><span>Total applications</span></div>
-      <div class="stat"><strong id="adminPending">0</strong><span>Pending applications</span></div>
-      <div class="stat"><strong id="adminCompleted">0</strong><span>Course completions</span></div>
-    </div>
-
-    <div class="panel" style="margin:18px 0">
-      <h3>Course performance</h3><p class="muted">Active learners are accounts with progress saved for a course. Completion counts reflect recorded completions.</p>
-      <div id="courseAnalytics" class="table-wrap"></div>
-    </div>
-
-    <div class="panel" style="margin:18px 0">
-      <h3>Add a course</h3>
-      <form id="addCourseForm" class="form-grid">
-        <div class="field"><label for="newTitle">Course title</label><input id="newTitle" required maxlength="120"></div>
-        <div class="field"><label for="newCategory">Category</label><select id="newCategory"><option>Beginner</option><option>Intermediate</option><option>Essential</option><option>Practice</option></select></div>
-        <div class="field"><label for="newIcon">Emoji icon</label><input id="newIcon" value="📘" maxlength="8"></div>
-        <div class="field"><label for="newDescription">Short description</label><input id="newDescription" required maxlength="300"></div>
-        <div class="field" style="grid-column:1/-1"><label for="newPoints">Learning points (separate each with a semicolon)</label><textarea id="newPoints" placeholder="Understand the basics; Identify key terms; Practise safely"></textarea></div>
-        <button class="btn primary" type="submit">Add course</button>
-      </form>
-      <div id="courseAdminStatus" class="notice" role="status"></div>
-      <div id="adminCourseList" class="table-wrap"></div>
-    </div>
-
-    <div class="panel" style="margin:18px 0">
-      <h3>Course applications</h3><div id="adminApplicationList" class="table-wrap"></div>
-    </div>
-
-    <div class="panel" style="margin:18px 0">
-      <h3>Registered students</h3><div id="adminStudentList" class="table-wrap"></div>
-    </div>
-
-    <button id="refreshAdmin" class="btn secondary">Refresh dashboard</button>
+<section id="page-about" class="page">
+  <span class="eyebrow">About us</span><h2>About Next Gen Trader</h2>
+  <div class="split">
+    <div class="panel"><h3>Our Mission</h3><p>Make financial-market concepts easier to understand through structured learning, practical exercises and responsible education.</p></div>
+    <div class="panel"><h3>Our Vision</h3><p>Build a community of informed learners who understand uncertainty, think critically and put knowledge before speculation.</p></div>
   </div>
-</section>
-
-<section id="page-mission" class="page">
-  <span class="eyebrow">Our purpose</span><h2>Mission & vision</h2>
-  <div class="grid">
-    <div class="card"><div class="card-body"><h3>🎯 Our mission</h3><p>Make trading and financial-market concepts easier to learn through clear educational resources and practice.</p></div></div>
-    <div class="card"><div class="card-body"><h3>🌍 Our vision</h3><p>Build a responsible learning community where knowledge and risk awareness come before speculation.</p></div></div>
-    <div class="card"><div class="card-body"><h3>🛡️ Our values</h3><p>Honesty, patience, security, transparency and lifelong learning.</p></div></div>
+  <div class="panel">
+    <span class="eyebrow">Founder & leadership</span>
+    <h2>GISA MANAV</h2><p><strong>Chief Executive Officer (CEO), Next Gen Trader</strong></p>
+    <p>Next Gen Trader is a learning project focused on helping people understand trading concepts, market analysis and risk awareness.</p>
   </div>
 </section>
 
 <section id="page-contact" class="page">
-  <span class="eyebrow">We are here to help</span><h2>Support & contact</h2>
-  <p>Support email: <a href="mailto:gisamanav@gmail.com">gisamanav@gmail.com</a></p>
+  <span class="eyebrow">Contact</span><h2>Support & Contact</h2>
+  <p>For direct contact, email <a href="mailto:gisamanav@gmail.com">gisamanav@gmail.com</a>.</p>
   <form id="contactForm" class="form-card">
     <div class="form-grid">
-      <div class="field"><label for="contactName">Your name</label><input id="contactName" required maxlength="100"></div>
-      <div class="field"><label for="contactEmail">Your email address</label><input id="contactEmail" type="email" required maxlength="150"></div>
+      <div class="field"><label for="contactName">Your Name</label><input id="contactName" required maxlength="100"></div>
+      <div class="field"><label for="contactEmail">Your Email</label><input id="contactEmail" type="email" required maxlength="150"></div>
     </div>
     <div class="field"><label for="contactSubject">Subject</label><input id="contactSubject" required maxlength="150"></div>
     <div class="field"><label for="contactMessage">Message</label><textarea id="contactMessage" required maxlength="4000"></textarea></div>
-    <button id="sendMessage" class="btn primary" type="submit">Send message</button>
-    <div id="contactStatus" class="notice" role="status" aria-live="polite">Enter your details and message.</div>
+    <button id="sendMessage" class="btn primary" type="submit">Send Message</button>
+    <div id="contactStatus" class="notice" role="status">Write your message and send it here.</div>
   </form>
 </section>
 
 <section id="page-privacy" class="page">
-  <span class="eyebrow">Privacy</span><h2>Privacy notice</h2>
-  <div class="panel"><p>When Firebase is configured, account and learning information is stored in Firebase services under the project's access rules. Contact-form messages are sent through your configured email provider. Explain your actual data practices clearly before inviting the public to use the service.</p><p>Do not collect unnecessary sensitive information. Configure secure access rules and review your provider's data policies.</p></div>
+  <span class="eyebrow">Privacy</span><h2>Privacy Notice</h2>
+  <div class="panel"><p>Account information and course progress are stored through Firebase after configuration. Contact messages use the configured email provider. Access to student information must be protected with database security rules.</p><p>Only collect information needed to operate the service and explain your data practices clearly to users.</p></div>
 </section>
 
 <section id="page-terms" class="page">
-  <span class="eyebrow">Important information</span><h2>Terms & trading disclaimer</h2>
-  <div class="panel"><p>Next Gen Trader is an educational project. Its content is not individual investment, legal or tax advice, and it is not a recommendation to buy or sell an asset.</p><p>Trading involves risk and losses are possible. No course, indicator, strategy or market analysis guarantees a profit. Learn with simulations and never risk money you cannot afford to lose.</p></div>
+  <span class="eyebrow">Important information</span><h2>Terms & Disclaimer</h2>
+  <div class="panel"><p>Next Gen Trader provides educational information, not personalised financial, investment, legal or tax advice.</p><p>Trading and investing can result in losses. No course, indicator or strategy guarantees profit. Learn with simulations and understand the risks before making financial decisions.</p></div>
+</section>
+
+<section id="page-admin" class="page">
+  <span class="eyebrow">Administration</span><h2>Administrator Dashboard</h2>
+  <p class="muted">This page is not listed in the public menu. Open your website with <code>#admin</code> after logging in as the administrator.</p>
+  <div id="adminStatus" class="notice">Checking access…</div>
+  <div id="adminContent" class="hidden">
+    <div class="stats">
+      <div class="stat"><strong id="adminVisits">0</strong><span>Recorded Visits</span></div>
+      <div class="stat"><strong id="adminAccounts">0</strong><span>Accounts</span></div>
+      <div class="stat"><strong id="adminLogins">0</strong><span>Login Events</span></div>
+      <div class="stat"><strong id="adminLogouts">0</strong><span>Logout Events</span></div>
+      <div class="stat"><strong id="adminApplications">0</strong><span>Applications</span></div>
+      <div class="stat"><strong id="adminPending">0</strong><span>Pending</span></div>
+      <div class="stat"><strong id="adminCompleted">0</strong><span>Course Completions</span></div>
+      <div class="stat"><strong id="adminStudents">0</strong><span>Student Profiles</span></div>
+    </div>
+    <div class="panel"><h3>Course Statistics</h3><div id="courseAnalytics" class="table-wrap"></div></div>
+    <div class="panel" style="margin-top:18px">
+      <h3>Add a Course</h3>
+      <form id="addCourseForm">
+        <div class="form-grid">
+          <div class="field"><label for="newTitle">Course Title</label><input id="newTitle" required maxlength="120"></div>
+          <div class="field"><label for="newCategory">Category</label><select id="newCategory"><option>Beginner</option><option>Intermediate</option><option>Essential</option><option>Practice</option></select></div>
+        </div>
+        <div class="field"><label for="newIcon">Course Icon</label><input id="newIcon" value="📘" maxlength="8"></div>
+        <div class="field"><label for="newDescription">Description</label><input id="newDescription" required maxlength="300"></div>
+        <div class="field"><label for="newPoints">Learning Points (separate with semicolons)</label><textarea id="newPoints"></textarea></div>
+        <button class="btn primary" type="submit">Add Course</button><div id="courseAdminStatus" class="notice"></div>
+      </form>
+      <div id="adminCourseList" class="table-wrap"></div>
+    </div>
+    <div class="panel" style="margin-top:18px"><h3>Applications</h3><div id="adminApplicationList" class="table-wrap"></div></div>
+    <div class="panel" style="margin-top:18px"><h3>Students</h3><div id="adminStudentList" class="table-wrap"></div></div>
+    <button id="refreshAdmin" class="btn secondary" style="margin-top:18px">Refresh Data</button>
+  </div>
 </section>
 </main>
 
-<footer><div class="footer-inner">
-  <div><strong>🎓 NEXT GEN TRADER</strong><p>Learn today. Make informed decisions tomorrow.</p></div>
-  <div class="footer-links"><button data-page="home">Home</button><button data-page="courses">Courses</button><button data-page="mission">About</button><button data-page="contact">Contact</button><button data-page="privacy">Privacy</button><button data-page="terms">Disclaimer</button></div>
-  <p>© <span id="year"></span> Next Gen Trader</p>
-</div></footer>
+<footer>
+  <strong>NEXT GEN TRADER</strong>
+  <p>© <span id="year"></span> Next Gen Trader · GISA MANAV, CEO</p>
+</footer>
 
 <script>
-"use strict";
-
-/* =========================================================
-   SETUP 1: FIREBASE
-   Replace these example strings with your Firebase web app config.
-   Enable Email/Password in Firebase Authentication.
-   Create a Firestore database.
-   ========================================================= */
+/* Add the configuration from your Firebase project settings. */
 const FIREBASE_CONFIG = {
   apiKey: "YOUR_FIREBASE_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -418,389 +376,349 @@ const FIREBASE_CONFIG = {
   appId: "YOUR_FIREBASE_APP_ID"
 };
 
-/* Use the exact email you will use for your administrator account.
-   Do not use this email allowlist as the only database security layer. */
 const ADMIN_EMAIL = "gisamanav@gmail.com";
 
-/* =========================================================
-   SETUP 2: EMAILJS
-   Configure a template that sends to gisamanav@gmail.com.
-   Template variables: from_name, reply_to, subject, message, to_email.
-   ========================================================= */
+/* Add these values from your EmailJS account. */
 const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
 const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
 const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
 
 const $ = id => document.getElementById(id);
-const firebaseConfigured =
-  FIREBASE_CONFIG.apiKey !== "YOUR_FIREBASE_API_KEY" &&
-  FIREBASE_CONFIG.projectId !== "YOUR_PROJECT_ID";
+const firebaseReady = FIREBASE_CONFIG.apiKey !== "YOUR_FIREBASE_API_KEY" &&
+                      FIREBASE_CONFIG.projectId !== "YOUR_PROJECT_ID";
+const emailReady = EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY" &&
+                   EMAILJS_SERVICE_ID !== "YOUR_EMAILJS_SERVICE_ID" &&
+                   EMAILJS_TEMPLATE_ID !== "YOUR_EMAILJS_TEMPLATE_ID";
 
-let auth = null, db = null, currentUser = null, currentCourse = null;
-let customCourses = [], quizIndex = 0, quizScore = 0, quizAnswered = false;
-let loginEventRecorded = false;
-const completedIds = new Set();
+let auth=null, db=null, currentUser=null, currentCourse=null;
+let customCourses=[], quizIndex=0, quizScore=0, quizAnswered=false;
+let activitySessionRecorded=false;
 
 const starterCourses = [
- {id:"trading-fundamentals",title:"Trading Fundamentals",icon:"📈",category:"Beginner",description:"Understand markets, buyers, sellers, prices and trading terminology.",points:["What financial markets are","How prices can change","Why risk and patience matter"]},
- {id:"forex-markets",title:"Forex Markets",icon:"💱",category:"Beginner",description:"Learn about currency pairs, spreads, pips and leverage risks.",points:["Currency pairs and exchange rates","Spreads and transaction costs","Risks of leverage"]},
- {id:"cryptocurrency-basics",title:"Cryptocurrency Basics",icon:"₿",category:"Beginner",description:"Explore digital assets, exchanges, volatility and security.",points:["What cryptocurrencies are","Volatility and uncertainty","Common scams to avoid"]},
- {id:"bitcoin-blockchain",title:"Bitcoin & Blockchain",icon:"🔗",category:"Beginner",description:"Discover blockchain concepts and Bitcoin transactions.",points:["Blocks and transactions","Wallets and private keys","Custody risks"]},
- {id:"technical-analysis",title:"Technical Analysis",icon:"📊",category:"Intermediate",description:"Learn how charts, trends, support and resistance are studied.",points:["Reading chart axes","Trend and range concepts","Limits of indicators"]},
- {id:"fundamental-analysis",title:"Fundamental Analysis",icon:"📰",category:"Intermediate",description:"Study economic information and asset fundamentals.",points:["Economic indicators","Company information","How news affects expectations"]},
- {id:"risk-management",title:"Risk Management",icon:"🛡️",category:"Essential",description:"Understand risk exposure, diversification and potential losses.",points:["Risk and reward concepts","Diversification","Why no strategy guarantees success"]},
- {id:"trading-psychology",title:"Trading Psychology",icon:"🧠",category:"Essential",description:"Explore decision-making, patience and emotional discipline.",points:["Recognising emotional decisions","Keeping a learning journal","Avoiding impulsive behaviour"]},
- {id:"stocks-etfs",title:"Stocks & ETFs",icon:"🏢",category:"Beginner",description:"Learn the basics of shares and exchange-traded funds.",points:["What a share represents","How funds differ from single stocks","Fees and risks"]},
- {id:"commodities-indices",title:"Commodities & Indices",icon:"🌐",category:"Beginner",description:"Explore commodities and what market indices measure.",points:["Examples of commodities","What an index measures","Factors affecting prices"]},
- {id:"candlesticks-patterns",title:"Candlesticks & Chart Patterns",icon:"🕯️",category:"Intermediate",description:"Read candle bodies, wicks and chart-pattern terminology.",points:["Open, high, low and close","Candle bodies and wicks","Why patterns can fail"]},
- {id:"scam-security",title:"Scam Awareness & Security",icon:"🔐",category:"Essential",description:"Recognise unrealistic promises, phishing and unsafe offers.",points:["Warning signs of fraud","Protecting accounts and devices","Checking claims independently"]},
- {id:"defi-digital-assets",title:"DeFi & Digital Assets",icon:"🧩",category:"Intermediate",description:"Learn introductory decentralised-finance concepts.",points:["Smart contracts","Protocol and technical risks","Why yields may be unsustainable"]},
- {id:"paper-trading",title:"Paper Trading & Simulations",icon:"📝",category:"Practice",description:"Practise hypothetical trades without risking real money.",points:["Using a simulated balance","Recording hypothetical decisions","Reviewing outcomes"]}
+{id:"trading-fundamentals",title:"Trading Fundamentals",icon:"📈",category:"Beginner",description:"Understand markets, prices, buyers, sellers and trading terminology.",points:["What financial markets are","How prices change","Why risk matters"]},
+{id:"forex-markets",title:"Forex Markets",icon:"💱",category:"Beginner",description:"Learn about currency pairs, spreads, pips and leverage risks.",points:["Currency pairs","Spreads and costs","Leverage risks"]},
+{id:"cryptocurrency-basics",title:"Cryptocurrency Basics",icon:"₿",category:"Beginner",description:"Explore digital assets, volatility, exchanges and security.",points:["What crypto is","Volatility","Scam awareness"]},
+{id:"bitcoin-blockchain",title:"Bitcoin & Blockchain",icon:"🔗",category:"Beginner",description:"Discover blockchain, Bitcoin transactions and digital wallets.",points:["Blockchain basics","Wallet security","Private keys"]},
+{id:"technical-analysis",title:"Technical Analysis",icon:"📊",category:"Intermediate",description:"Learn how charts, trends, support and resistance are studied.",points:["Chart axes","Trends and ranges","Indicator limitations"]},
+{id:"fundamental-analysis",title:"Fundamental Analysis",icon:"📰",category:"Intermediate",description:"Study economic information and the fundamentals behind assets.",points:["Economic indicators","Company information","Market expectations"]},
+{id:"risk-management",title:"Risk Management",icon:"🛡️",category:"Essential",description:"Understand exposure, diversification and potential losses.",points:["Risk and reward","Diversification","Limits of risk controls"]},
+{id:"trading-psychology",title:"Trading Psychology",icon:"🧠",category:"Essential",description:"Explore patience, emotional decisions and discipline.",points:["Recognise emotions","Keep a learning journal","Avoid impulsive choices"]},
+{id:"stocks-etfs",title:"Stocks & ETFs",icon:"🏢",category:"Beginner",description:"Learn the basics of company shares and exchange-traded funds.",points:["Shares","Funds","Fees and risks"]},
+{id:"commodities-indices",title:"Commodities & Indices",icon:"🌐",category:"Beginner",description:"Explore commodities and what market indices measure.",points:["Commodity examples","Indices","Price factors"]},
+{id:"candlesticks-patterns",title:"Candlesticks & Chart Patterns",icon:"🕯️",category:"Intermediate",description:"Read candle bodies, wicks and common chart-pattern terms.",points:["Open, high, low and close","Candle shapes","Patterns can fail"]},
+{id:"scam-security",title:"Scam Awareness & Security",icon:"🔐",category:"Essential",description:"Recognise unrealistic claims, phishing and unsafe offers.",points:["Warning signs","Account protection","Verify claims"]},
+{id:"defi-digital-assets",title:"DeFi & Digital Assets",icon:"🧩",category:"Intermediate",description:"Learn introductory decentralised finance concepts and risks.",points:["Smart contracts","Protocol risks","Unrealistic yield claims"]},
+{id:"paper-trading",title:"Paper Trading & Simulations",icon:"📝",category:"Practice",description:"Practise hypothetical trades without risking real money.",points:["Simulated balances","Record decisions","Review outcomes"]}
 ];
 
-function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function setStatus(id,message,ok=false){const el=$(id);el.textContent=message;el.className="notice "+(ok?"success":"error");}
-function isAdmin(){return !!currentUser && currentUser.email.toLowerCase()===ADMIN_EMAIL.toLowerCase();}
-function localPageVisit(){try{const n=Number(sessionStorage.getItem("ngt_page_visits")||0);sessionStorage.setItem("ngt_page_visits",String(n+1));}catch{}}
+const quiz=[
+{q:"What is risk management for?",o:["Guaranteeing profit","Understanding and managing potential losses","Predicting every price move"],a:1,x:"Risk management helps people understand exposure but cannot eliminate all risk."},
+{q:"What information does a standard candlestick show?",o:["Open, high, low and close","Guaranteed future prices","Only trading fees"],a:0,x:"A standard candle represents the open, high, low and close for a time period."},
+{q:"What is paper trading?",o:["Borrowing money","Practising with simulated trades","A guaranteed investment"],a:1,x:"Paper trading uses hypothetical trades instead of real orders."},
+{q:"How should you treat guaranteed-profit claims?",o:["Trust them","Send money immediately","Treat them as a warning sign"],a:2,x:"No trading strategy guarantees profits."},
+{q:"What is diversification intended to do?",o:["Remove all risk","Spread exposure across different assets","Guarantee high returns"],a:1,x:"Diversification can spread some risks but cannot remove all risk."}
+];
 
-function openMenu(){$("drawer").classList.add("open");$("backdrop").classList.remove("hidden");$("menuToggle").setAttribute("aria-expanded","true");}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function status(id,msg,ok=false){$(id).textContent=msg;$(id).className="notice "+(ok?"success":"error");}
+function isAdmin(){return !!currentUser&&currentUser.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();}
+function allCourses(){return [...starterCourses,...customCourses];}
+
 function closeMenu(){$("drawer").classList.remove("open");$("backdrop").classList.add("hidden");$("menuToggle").setAttribute("aria-expanded","false");}
+function openMenu(){$("drawer").classList.add("open");$("backdrop").classList.remove("hidden");$("menuToggle").setAttribute("aria-expanded","true");}
 $("menuToggle").addEventListener("click",()=> $("drawer").classList.contains("open")?closeMenu():openMenu());
 $("closeMenu").addEventListener("click",closeMenu);
 $("backdrop").addEventListener("click",closeMenu);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu();});
 document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-page]");
+ if(b){e.preventDefault();showPage(b.dataset.page);}
  if($("drawer").classList.contains("open")&&!$("drawer").contains(e.target)&&!$("menuToggle").contains(e.target))closeMenu();
 });
 
-const pageNames=["home","courses","lesson","practice","apply","login","signup","dashboard","admin","mission","contact","privacy","terms"];
+const pages=["home","courses","lesson","practice","apply","login","signup","dashboard","about","contact","privacy","terms","admin"];
 function showPage(name){
- if(!pageNames.includes(name))name="home";
- if(name==="admin"&&!isAdmin()){history.replaceState(null,"",location.pathname+location.search+"#home");name="home";setTimeout(()=>alert("Administrator access is restricted. Please log in with the administrator account."),10);}
+ if(!pages.includes(name))name="home";
+ if(name==="admin"&&!isAdmin()){name="login";setTimeout(()=>alert("Please log in with the administrator account."),0);}
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));
- document.querySelectorAll("#navlist [data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
  closeMenu();window.scrollTo({top:0,behavior:"auto"});
- if(name==="dashboard")refreshStudentDashboard();
+ history.replaceState(null,"",location.pathname+location.search+"#"+name);
+ if(name==="dashboard")refreshDashboard();
  if(name==="admin")loadAdmin();
 }
-document.addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b){e.preventDefault();showPage(b.dataset.page);}});
-window.addEventListener("hashchange",()=>{const route=location.hash.replace("#","");if(pageNames.includes(route))showPage(route);});
-localPageVisit();
+window.addEventListener("hashchange",()=>{
+ const name=location.hash.slice(1);
+ if(pages.includes(name))showPage(name);
+});
 
-/* Course data are initially built in, then shared Firestore courses are loaded. */
-function allCourses(){return [...starterCourses,...customCourses];}
-function courseCard(c){
- const id=esc(c.id);
- return `<article class="card"><div class="course-image">${esc(c.icon||"📘")}</div><div class="card-body">
- <span class="pill">${esc(c.category||"Beginner")}</span><h3>${esc(c.title)}</h3><p>${esc(c.description)}</p>
- <div class="card-actions"><button class="btn primary" data-open-course="${id}">View course →</button><button class="btn secondary small-btn" data-apply-course="${id}">Apply</button></div></div></article>`;
+function card(c){return `<article class="card"><div class="course-image">${esc(c.icon||"📘")}</div><div class="card-body"><span class="pill">${esc(c.category)}</span><h3>${esc(c.title)}</h3><p>${esc(c.description)}</p><div class="card-actions"><button class="btn primary" data-course="${esc(c.id)}">View Course</button><button class="btn secondary" data-apply="${esc(c.id)}">Apply</button></div></div></article>`;}
+function renderCourses(q=""){
+ const term=q.trim().toLowerCase(),cat=$("categoryFilter").value;
+ const list=allCourses().filter(c=>(!term||`${c.title} ${c.description} ${c.category}`.toLowerCase().includes(term))&&(cat==="all"||c.category===cat));
+ $("popularCourses").innerHTML=allCourses().slice(0,3).map(card).join("");
+ $("allCourses").innerHTML=list.map(card).join("");
+ $("courseCount").textContent=`${list.length} courses`;
+ $("noCourses").classList.toggle("hidden",list.length>0);
+ $("appCourse").innerHTML=allCourses().map(c=>`<option value="${esc(c.id)}">${esc(c.title)}</option>`).join("");
+ $("dashAvailable").textContent=allCourses().length;
 }
-function renderCourses(query=""){
- const courses=allCourses(),q=query.trim().toLowerCase(),cat=$("categoryFilter")?.value||"all";
- const filtered=courses.filter(c=>(!q||[c.title,c.description,c.category].join(" ").toLowerCase().includes(q))&&(cat==="all"||c.category===cat));
- $("popularCourses").innerHTML=courses.slice(0,3).map(courseCard).join("");
- $("allCourses").innerHTML=filtered.map(courseCard).join("");
- $("courseCount").textContent=`Showing ${filtered.length} of ${courses.length} courses`;
- $("noCourses").classList.toggle("hidden",filtered.length>0);
- $("appCourse").innerHTML=courses.map(c=>`<option value="${esc(c.id)}">${esc(c.title)}</option>`).join("");
- $("dashAvailable").textContent=courses.length;
-}
-$("heroSearch").addEventListener("submit",e=>{e.preventDefault();$("courseSearch").value=$("homeSearch").value;showPage("courses");renderCourses($("courseSearch").value);});
+$("homeSearchForm").addEventListener("submit",e=>{e.preventDefault();$("courseSearch").value=$("homeSearch").value;renderCourses($("courseSearch").value);showPage("courses");});
 $("courseSearch").addEventListener("input",()=>renderCourses($("courseSearch").value));
 $("categoryFilter").addEventListener("change",()=>renderCourses($("courseSearch").value));
 document.addEventListener("click",e=>{
- const tag=e.target.closest("[data-search]");if(tag){$("homeSearch").value=tag.dataset.search;$("courseSearch").value=tag.dataset.search;showPage("courses");renderCourses(tag.dataset.search);}
- const open=e.target.closest("[data-open-course]");if(open)openCourse(open.dataset.openCourse);
- const apply=e.target.closest("[data-apply-course]");if(apply){$("appCourse").value=apply.dataset.applyCourse;showPage("apply");}
+ const c=e.target.closest("[data-course]");
+ if(c){
+  currentCourse=allCourses().find(x=>x.id===c.dataset.course);
+  if(!currentCourse)return;
+  $("lessonCategory").textContent=currentCourse.category;
+  $("lessonTitle").textContent=currentCourse.icon+" "+currentCourse.title;
+  $("lessonDescription").textContent=currentCourse.description;
+  $("lessonPoints").innerHTML=currentCourse.points.map(p=>`<li>${esc(p)}</li>`).join("");
+  $("lessonStatus").textContent="";
+  showPage("lesson");
+ }
+ const a=e.target.closest("[data-apply]");
+ if(a){$("appCourse").value=a.dataset.apply;showPage("apply");}
 });
 
-function openCourse(id){
- const c=allCourses().find(x=>x.id===id);if(!c)return;
- currentCourse=c;
- $("lessonTitle").textContent=c.icon+" "+c.title;$("lessonCategory").textContent=c.category||"Course";
- $("lessonDescription").textContent=c.description;
- $("lessonPoints").innerHTML=(c.points||[]).map(p=>`<li>${esc(p)}</li>`).join("");
- $("lessonStatus").textContent="";
- showPage("lesson");
-}
 $("completeLesson").addEventListener("click",async()=>{
- if(!currentUser){setStatus("lessonStatus","Please log in to save your course progress.");return;}
- if(!currentCourse)return;
- if(!db){setStatus("lessonStatus","Connect Firebase first to save progress permanently.");return;}
+ if(!currentUser){status("lessonStatus","Log in to save your progress.");return;}
+ if(!db){status("lessonStatus","Firebase is not configured. Progress has not been saved.");return;}
  try{
   await db.collection("users").doc(currentUser.uid).set({
    name:currentUser.displayName||currentUser.email,email:currentUser.email,
    completedCourses:firebase.firestore.FieldValue.arrayUnion(currentCourse.id),
    lastActive:firebase.firestore.FieldValue.serverTimestamp()
   },{merge:true});
-  setStatus("lessonStatus","Course completion saved to your account.",true);
-  refreshStudentDashboard();
- }catch(err){setStatus("lessonStatus","Could not save progress: "+err.message);}
+  status("lessonStatus","Course completion saved.",true);refreshDashboard();
+ }catch(e){status("lessonStatus","Could not save progress. Check Firebase settings.");}
 });
 
-/* Quiz */
-const quiz=[
- {q:"What is the purpose of risk management?",o:["Guarantee a profit","Understand and limit potential losses","Predict every price move"],a:1,x:"Risk management helps people understand and manage exposure; it cannot eliminate risk."},
- {q:"What does a standard candlestick represent?",o:["Open, high, low and close prices","Guaranteed future prices","Only transaction fees"],a:0,x:"A standard candle shows open, high, low and close for a time period."},
- {q:"What is paper trading?",o:["Borrowing money","Practising with simulated trades","A guaranteed investment"],a:1,x:"Paper trading lets you practise with hypothetical trades without placing them with real money."},
- {q:"What should you think about a promise of guaranteed trading profit?",o:["Trust it","Send money immediately","Treat it as a warning sign and check independently"],a:2,x:"No trading strategy guarantees profits. Guaranteed-profit claims are a warning sign."},
- {q:"What is diversification intended to do?",o:["Remove every risk","Spread exposure across different assets","Guarantee high returns"],a:1,x:"Diversification can spread some risks but does not remove all investment risk."}
-];
 function renderQuiz(){
  const item=quiz[quizIndex];quizAnswered=false;
  $("quizQuestion").textContent=`${quizIndex+1}. ${item.q}`;
- $("quizOptions").innerHTML=item.o.map((o,i)=>`<button class="quiz-option" data-quiz-answer="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join("");
- $("quizFeedback").textContent="Choose an answer."; $("quizFeedback").className="notice";
+ $("quizOptions").innerHTML=item.o.map((x,i)=>`<button class="quiz-option" data-answer="${i}">${String.fromCharCode(65+i)}. ${esc(x)}</button>`).join("");
+ $("quizFeedback").textContent="Choose an answer.";$("quizFeedback").className="notice";
  $("quizScore").textContent=quizScore;$("quizTotal").textContent=quiz.length;
 }
 $("quizOptions").addEventListener("click",e=>{
- const b=e.target.closest("[data-quiz-answer]");if(!b||quizAnswered)return;quizAnswered=true;
- const item=quiz[quizIndex];const right=Number(b.dataset.quizAnswer)===item.a;if(right)quizScore++;
- setStatus("quizFeedback",(right?"Correct! ":"Not quite. ")+item.x,right);
- $("quizScore").textContent=quizScore;$("quizOptions").querySelectorAll("button").forEach(x=>x.disabled=true);
+ const b=e.target.closest("[data-answer]");if(!b||quizAnswered)return;quizAnswered=true;
+ const item=quiz[quizIndex],correct=Number(b.dataset.answer)===item.a;
+ if(correct)quizScore++;
+ status("quizFeedback",(correct?"Correct. ":"Not quite. ")+item.x,correct);
+ $("quizScore").textContent=quizScore;
+ $("quizOptions").querySelectorAll("button").forEach(x=>x.disabled=true);
 });
-$("nextQuestion").addEventListener("click",()=>{quizIndex++;if(quizIndex>=quiz.length){$("quizQuestion").textContent="Quiz complete!";$("quizOptions").innerHTML="";setStatus("quizFeedback",`Your score is ${quizScore} out of ${quiz.length}. Restart to practise again.`,true);}else renderQuiz();});
+$("nextQuestion").addEventListener("click",()=>{
+ quizIndex++;
+ if(quizIndex>=quiz.length){$("quizQuestion").textContent="Quiz complete";$("quizOptions").innerHTML="";status("quizFeedback",`Your score: ${quizScore} out of ${quiz.length}. Restart to try again.`,true);}
+ else renderQuiz();
+});
 $("resetQuiz").addEventListener("click",()=>{quizIndex=0;quizScore=0;renderQuiz();});
 
-/* Firebase initialisation */
-if(firebaseConfigured){
- try{firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
+if(firebaseReady){
+ try{
+  firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
   auth.onAuthStateChanged(async user=>{
    currentUser=user;
    if(user){
-    $("welcomeHeading").textContent="Welcome back, "+(user.displayName||user.email)+"! 👋";
-    if(!loginEventRecorded){recordEvent("login");loginEventRecorded=true;}
-    if(isAdmin()&&location.hash==="#admin")showPage("admin");
+    if(!activitySessionRecorded){recordEvent("login");activitySessionRecorded=true;}
+    if(location.hash==="#admin"&&isAdmin())showPage("admin");
    }else{
-    loginEventRecorded=false;
-    if(location.hash==="#admin")showPage("home");
+    activitySessionRecorded=false;
+    if(location.hash==="#admin")showPage("login");
    }
-   refreshStudentDashboard();
+   refreshDashboard();
   });
   loadSharedCourses();
- }catch(err){console.error(err);}
+ }catch(e){console.error("Firebase setup error:",e);}
 }
+
 async function loadSharedCourses(){
  if(!db)return;
  try{
   const snap=await db.collection("courses").get();
   customCourses=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderCourses($("courseSearch").value||"");
- }catch(e){console.warn("Shared course loading failed. Check Firestore rules.",e);}
+  renderCourses($("courseSearch").value);
+ }catch(e){console.warn("Could not load shared courses.",e);}
 }
 
-/* Authentication: Firebase accounts persist across visits and devices. */
 $("signupForm").addEventListener("submit",async e=>{
  e.preventDefault();
- if(!auth){setStatus("signupStatus","Firebase is not configured. Complete the Firebase setup steps below.");return;}
+ if(!auth){status("signupStatus","Account service is not configured. Add your Firebase configuration first.");return;}
  const name=$("signupName").value.trim(),email=$("signupEmail").value.trim(),password=$("signupPassword").value;
  try{
-  const cred=await auth.createUserWithEmailAndPassword(email,password);
-  await cred.user.updateProfile({displayName:name});
-  await db.collection("users").doc(cred.user.uid).set({name,email:email.toLowerCase(),role:"student",completedCourses:[],createdAt:firebase.firestore.FieldValue.serverTimestamp(),lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-  setStatus("signupStatus","Account created. Welcome, "+name+"!",true);showPage("dashboard");
- }catch(err){setStatus("signupStatus",err.message);}
+  const result=await auth.createUserWithEmailAndPassword(email,password);
+  await result.user.updateProfile({displayName:name});
+  await db.collection("users").doc(result.user.uid).set({
+   name,email:email.toLowerCase(),completedCourses:[],
+   createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+   lastActive:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+  status("signupStatus","Your account has been created.",true);showPage("dashboard");
+ }catch(e){status("signupStatus",e.message);}
 });
+
 $("loginForm").addEventListener("submit",async e=>{
  e.preventDefault();
- if(!auth){setStatus("loginStatus","Firebase is not configured yet.");return;}
- try{await auth.signInWithEmailAndPassword($("loginEmail").value.trim(),$("loginPassword").value);setStatus("loginStatus","Welcome back!",true);showPage("dashboard");}
- catch(err){setStatus("loginStatus",err.message);}
+ if(!auth){status("loginStatus","Account service is not configured yet.");return;}
+ try{
+  await auth.signInWithEmailAndPassword($("loginEmail").value.trim(),$("loginPassword").value);
+  status("loginStatus","You are logged in.",true);
+  showPage(location.hash==="#admin"&&isAdmin()?"admin":"dashboard");
+ }catch(e){status("loginStatus",e.message);}
 });
+
 $("resetPassword").addEventListener("click",async()=>{
- if(!auth){setStatus("loginStatus","Configure Firebase first.");return;}
- const email=$("loginEmail").value.trim();if(!email){setStatus("loginStatus","Enter your email first.");return;}
- try{await auth.sendPasswordResetEmail(email);setStatus("loginStatus","Password reset email requested. Check your inbox.",true);}
- catch(err){setStatus("loginStatus",err.message);}
+ if(!auth){status("loginStatus","Configure Firebase first.");return;}
+ const email=$("loginEmail").value.trim();
+ if(!email){status("loginStatus","Enter your email address above first.");return;}
+ try{await auth.sendPasswordResetEmail(email);status("loginStatus","Password reset email requested. Check your inbox and spam folder.",true);}
+ catch(e){status("loginStatus",e.message);}
 });
+
 $("logoutButton").addEventListener("click",async()=>{
- if(!auth){showPage("home");return;}
- try{await recordEvent("logout");await auth.signOut();currentUser=null;showPage("home");}
- catch(err){alert("Could not log out: "+err.message);}
+ if(!auth)return;
+ await recordEvent("logout");
+ try{await auth.signOut();currentUser=null;showPage("home");}
+ catch(e){alert("Log out failed. Please try again.");}
 });
+
 async function recordEvent(type){
  if(!db)return;
- try{await db.collection("activityEvents").add({type,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.warn("Activity event not recorded",e);}
+ try{await db.collection("activityEvents").add({type,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});}
+ catch(e){console.warn("Activity was not recorded.");}
 }
 
-/* Course applications are saved to Firestore for admin review. */
 $("applicationForm").addEventListener("submit",async e=>{
  e.preventDefault();
- if(!currentUser){setStatus("applicationStatus","Please create an account or log in before submitting an application.");showPage("login");return;}
- if(!db){setStatus("applicationStatus","Firebase is not configured. Application was not sent.");return;}
- const c=allCourses().find(x=>x.id===$("appCourse").value);
+ if(!currentUser){status("applicationStatus","Please log in before applying.");showPage("login");return;}
+ if(!db){status("applicationStatus","Firebase is not configured. Application was not sent.");return;}
+ const course=allCourses().find(c=>c.id===$("appCourse").value);
  try{
   await db.collection("applications").add({
-   uid:currentUser.uid,name:$("appName").value.trim(),email:$("appEmail").value.trim(),
-   courseId:c?.id||"",courseTitle:c?.title||"",reason:$("appReason").value.trim(),
+   uid:currentUser.uid,name:$("appName").value.trim(),
+   email:$("appEmail").value.trim(),courseId:course?.id||"",
+   courseTitle:course?.title||"",reason:$("appReason").value.trim(),
    status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()
   });
-  setStatus("applicationStatus","Application submitted successfully. You can view its status in My Learning.",true);
-  $("applicationForm").reset();refreshStudentDashboard();
- }catch(err){setStatus("applicationStatus","Application could not be submitted: "+err.message);}
+  status("applicationStatus","Application submitted for review.",true);
+  $("applicationForm").reset();refreshDashboard();
+ }catch(e){status("applicationStatus","Application failed. Check your account and database rules.");}
 });
 
-async function refreshStudentDashboard(){
- $("welcomeHeading").textContent=currentUser?"Welcome back, "+(currentUser.displayName||currentUser.email)+"! 👋":"My learning dashboard";
- $("welcomeText").textContent=currentUser?"Your learning journey continues. Small, consistent steps build knowledge.":"Log in to view saved progress.";
- if(!currentUser||!db){$("dashCompleted").textContent="0";$("dashProgress").textContent="0%";$("progressBar").value=0;$("completedList").innerHTML="<li>Log in and connect Firebase to save course progress.</li>";return;}
+async function refreshDashboard(){
+ $("welcomeHeading").textContent=currentUser?"Welcome back, "+(currentUser.displayName||currentUser.email)+"!":"My Learning";
+ $("welcomeText").textContent=currentUser?"Continue building your knowledge.":"Log in to see your saved progress.";
+ if(!currentUser||!db){
+  $("dashCompleted").textContent="0";$("dashProgress").textContent="0%";$("progressBar").value=0;
+  $("completedList").innerHTML="<li>Log in to view your saved courses.</li>";$("myApplications").textContent="Log in to view applications.";return;
+ }
  try{
-  const userDoc=await db.collection("users").doc(currentUser.uid).get();
-  const data=userDoc.exists?userDoc.data():{};
-  const done=Array.isArray(data.completedCourses)?data.completedCourses:[];
-  const pct=Math.round(done.length/Math.max(allCourses().length,1)*100);
+  const doc=await db.collection("users").doc(currentUser.uid).get(),data=doc.exists?doc.data():{};
+  const done=data.completedCourses||[],pct=Math.round(done.length/Math.max(allCourses().length,1)*100);
   $("dashCompleted").textContent=done.length;$("dashProgress").textContent=pct+"%";$("progressBar").value=pct;
-  $("progressText").textContent=`You have completed ${done.length} of ${allCourses().length} courses.`;
-  $("completedList").innerHTML=done.length?done.map(id=>{const c=allCourses().find(x=>x.id===id);return `<li>${esc(c?.title||id)}</li>`;}).join(""):"<li>No courses completed yet.</li>";
+  $("progressText").textContent=`${done.length} of ${allCourses().length} courses completed.`;
+  $("completedList").innerHTML=done.length?done.map(id=>`<li>${esc(allCourses().find(c=>c.id===id)?.title||id)}</li>`).join(""):"<li>No courses completed yet.</li>";
   const apps=await db.collection("applications").where("uid","==",currentUser.uid).get();
   $("dashApplications").textContent=apps.size;
-  $("myApplications").innerHTML=apps.empty?"No applications submitted yet.":`<div class="table-wrap"><table><thead><tr><th>Course</th><th>Status</th><th>Submitted</th></tr></thead><tbody>${apps.docs.map(d=>{const a=d.data();return `<tr><td>${esc(a.courseTitle)}</td><td>${esc(a.status)}</td><td>${a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString():"—"}</td></tr>`;}).join("")}</tbody></table></div>`;
- }catch(e){console.warn(e);}
+  $("myApplications").innerHTML=apps.empty?"No applications yet.":`<div class="table-wrap"><table><tr><th>Course</th><th>Status</th></tr>${apps.docs.map(d=>`<tr><td>${esc(d.data().courseTitle)}</td><td>${esc(d.data().status)}</td></tr>`).join("")}</table></div>`;
+ }catch(e){console.warn("Dashboard loading failed.");}
 }
 
-/* Contact form. EmailJS must be configured; no fake success messages. */
-const emailReady=EMAILJS_PUBLIC_KEY!=="YOUR_EMAILJS_PUBLIC_KEY"&&EMAILJS_SERVICE_ID!=="YOUR_EMAILJS_SERVICE_ID"&&EMAILJS_TEMPLATE_ID!=="YOUR_EMAILJS_TEMPLATE_ID";
+/* Contact email: never reports success until EmailJS accepts the request. */
 if(emailReady&&window.emailjs)emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
 $("contactForm").addEventListener("submit",async e=>{
  e.preventDefault();
- if(!emailReady||!window.emailjs){setStatus("contactStatus","Email sending is not configured. No email has been sent. Configure EmailJS or use the direct email link: gisamanav@gmail.com");return;}
+ if(!emailReady||!window.emailjs){
+  status("contactStatus","Email is not configured. No message was sent. You can email gisamanav@gmail.com directly.");
+  return;
+ }
  $("sendMessage").disabled=true;$("sendMessage").textContent="Sending…";
  try{
   const result=await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-   from_name:$("contactName").value.trim(),reply_to:$("contactEmail").value.trim(),
-   subject:$("contactSubject").value.trim(),message:$("contactMessage").value.trim(),to_email:"gisamanav@gmail.com"
+   from_name:$("contactName").value.trim(),
+   reply_to:$("contactEmail").value.trim(),
+   subject:$("contactSubject").value.trim(),
+   message:$("contactMessage").value.trim(),
+   to_email:"gisamanav@gmail.com"
   });
-  if(result.status<200||result.status>=300)throw new Error("Email service did not accept the message.");
-  setStatus("contactStatus","Message accepted by the email service. Check your inbox and spam folder to confirm receipt.",true);$("contactForm").reset();
- }catch(err){setStatus("contactStatus","Message failed to send. Check your EmailJS settings or email gisamanav@gmail.com directly.");console.error(err);}
- finally{$("sendMessage").disabled=false;$("sendMessage").textContent="Send message";}
+  if(result.status<200||result.status>=300)throw new Error("Email service rejected the message.");
+  status("contactStatus","The email service accepted your message. Check your inbox to confirm delivery.",true);
+  $("contactForm").reset();
+ }catch(e){status("contactStatus","Message failed. Check your EmailJS settings or email gisamanav@gmail.com directly.");}
+ finally{$("sendMessage").disabled=false;$("sendMessage").textContent="Send Message";}
 });
 
-/* =========================================================
-   ADMIN DASHBOARD
-   Access via yoursite/#admin after logging in as ADMIN_EMAIL.
-   Firebase security rules must enforce who may read/write admin data.
-   ========================================================= */
+/* Admin: open by visiting yoursite/#admin after logging in.
+   Database rules must protect admin data; hiding a page is not security. */
 async function loadAdmin(){
- if(!isAdmin()){$("adminStatus").textContent="Access denied. Log in with the administrator email.";return;}
+ if(!isAdmin()){$("adminStatus").textContent="Access denied. Log in using the administrator account.";return;}
  if(!db){$("adminStatus").textContent="Firebase is not configured.";return;}
- $("adminContent").classList.remove("hidden");$("adminStatus").textContent="Loading dashboard…";
+ $("adminContent").classList.remove("hidden");$("adminStatus").textContent="Loading…";
  try{
-  const [usersSnap,appsSnap,eventsSnap,coursesSnap]=await Promise.all([
+  const [us,apps,events,cs]=await Promise.all([
    db.collection("users").get(),db.collection("applications").get(),
    db.collection("activityEvents").get(),db.collection("courses").get()
   ]);
-  $("adminAccounts").textContent=usersSnap.size;$("adminStudents").textContent=usersSnap.size;
-  $("adminApplications").textContent=appsSnap.size;
-  $("adminPending").textContent=appsSnap.docs.filter(d=>(d.data().status||"pending")==="pending").length;
-  $("adminLogins").textContent=eventsSnap.docs.filter(d=>d.data().type==="login").length;
-  $("adminLogouts").textContent=eventsSnap.docs.filter(d=>d.data().type==="logout").length;
-  $("adminVisits").textContent=eventsSnap.docs.filter(d=>d.data().type==="visit").length;
-  let completions=0;const courseStats={};
-  usersSnap.docs.forEach(d=>{
-   const u=d.data();(u.completedCourses||[]).forEach(id=>{completions++;courseStats[id]??={completed:0,active:0};courseStats[id].completed++;});
-   (u.activeCourses||[]).forEach(id=>{courseStats[id]??={completed:0,active:0};courseStats[id].active++;});
-  });
-  $("adminCompleted").textContent=completions;
-  const all=[...starterCourses,...coursesSnap.docs.map(d=>({id:d.id,...d.data()}))];
-  $("courseAnalytics").innerHTML=`<table><thead><tr><th>Course</th><th>Active learners recorded</th><th>Completed</th></tr></thead><tbody>${all.map(c=>`<tr><td>${esc(c.title)}</td><td>${courseStats[c.id]?.active||0}</td><td>${courseStats[c.id]?.completed||0}</td></tr>`).join("")}</tbody></table>`;
-  $("adminCourseList").innerHTML=`<table><thead><tr><th>Course</th><th>Category</th><th>Action</th></tr></thead><tbody>${coursesSnap.docs.map(d=>`<tr><td>${esc(d.data().title)}</td><td>${esc(d.data().category)}</td><td><button class="btn secondary small-btn" data-delete-course="${esc(d.id)}">Delete</button></td></tr>`).join("")||"<tr><td colspan='3'>No extra courses have been added.</td></tr>"}</tbody></table>`;
-  $("adminApplicationList").innerHTML=`<table><thead><tr><th>Applicant</th><th>Course</th><th>Email</th><th>Reason</th><th>Status</th><th>Decision</th></tr></thead><tbody>${appsSnap.docs.map(d=>{const a=d.data();return `<tr><td>${esc(a.name)}</td><td>${esc(a.courseTitle)}</td><td>${esc(a.email)}</td><td>${esc(a.reason)}</td><td>${esc(a.status||"pending")}</td><td><button class="btn primary small-btn" data-decision="${d.id}" data-value="accepted">Accept</button> <button class="btn secondary small-btn" data-decision="${d.id}" data-value="declined">Decline</button></td></tr>`;}).join("")||"<tr><td colspan='6'>No applications yet.</td></tr>"}</tbody></table>`;
-  $("adminStudentList").innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Completed courses</th><th>Last active</th></tr></thead><tbody>${usersSnap.docs.map(d=>{const u=d.data();return `<tr><td>${esc(u.name||"—")}</td><td>${esc(u.email||"—")}</td><td>${(u.completedCourses||[]).length}</td><td>${u.lastActive?.toDate?u.lastActive.toDate().toLocaleString():"—"}</td></tr>`;}).join("")}</tbody></table>`;
-  $("adminStatus").textContent="Dashboard loaded. Counts show data recorded in Firestore; visits are not the same as unique people.";
- }catch(err){$("adminStatus").textContent="Could not load admin data. Check Firestore configuration and security rules. "+err.message;}
+  $("adminAccounts").textContent=us.size;$("adminStudents").textContent=us.size;
+  $("adminApplications").textContent=apps.size;
+  $("adminPending").textContent=apps.docs.filter(d=>(d.data().status||"pending")==="pending").length;
+  $("adminLogins").textContent=events.docs.filter(d=>d.data().type==="login").length;
+  $("adminLogouts").textContent=events.docs.filter(d=>d.data().type==="logout").length;
+  $("adminVisits").textContent=events.docs.filter(d=>d.data().type==="visit").length;
+  const stats={};let total=0;
+  us.docs.forEach(d=>(d.data().completedCourses||[]).forEach(id=>{stats[id]??=0;stats[id]++;total++;}));
+  $("adminCompleted").textContent=total;
+  const courses=allCourses();
+  $("courseAnalytics").innerHTML=`<table><tr><th>Course</th><th>Recorded Completions</th></tr>${courses.map(c=>`<tr><td>${esc(c.title)}</td><td>${stats[c.id]||0}</td></tr>`).join("")}</table>`;
+  $("adminCourseList").innerHTML=`<table><tr><th>Course</th><th>Category</th><th>Action</th></tr>${cs.docs.map(d=>`<tr><td>${esc(d.data().title)}</td><td>${esc(d.data().category)}</td><td><button class="btn secondary" data-delete="${esc(d.id)}">Delete</button></td></tr>`).join("")||"<tr><td colspan='3'>No additional courses.</td></tr>"}</table>`;
+  $("adminApplicationList").innerHTML=`<table><tr><th>Name</th><th>Course</th><th>Email</th><th>Reason</th><th>Status</th><th>Decision</th></tr>${apps.docs.map(d=>{const a=d.data();return `<tr><td>${esc(a.name)}</td><td>${esc(a.courseTitle)}</td><td>${esc(a.email)}</td><td>${esc(a.reason)}</td><td>${esc(a.status)}</td><td><button class="btn primary" data-decision="${d.id}" data-value="accepted">Accept</button> <button class="btn secondary" data-decision="${d.id}" data-value="declined">Decline</button></td></tr>`;}).join("")||"<tr><td colspan='6'>No applications yet.</td></tr>"}</table>`;
+  $("adminStudentList").innerHTML=`<table><tr><th>Name</th><th>Email</th><th>Completed</th></tr>${us.docs.map(d=>{const u=d.data();return `<tr><td>${esc(u.name||"—")}</td><td>${esc(u.email||"—")}</td><td>${(u.completedCourses||[]).length}</td></tr>`;}).join("")}</table>`;
+  $("adminStatus").textContent="Dashboard loaded. Counts reflect recorded data, not necessarily unique visitors.";
+ }catch(e){$("adminStatus").textContent="Unable to load administrator data. Check Firebase rules and configuration.";}
 }
 $("refreshAdmin").addEventListener("click",loadAdmin);
+
 $("addCourseForm").addEventListener("submit",async e=>{
- e.preventDefault();if(!isAdmin()||!db){setStatus("courseAdminStatus","Administrator access and Firebase are required.");return;}
- const title=$("newTitle").value.trim(),description=$("newDescription").value.trim();
- const id=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+Date.now().toString(36);
+ e.preventDefault();
+ if(!isAdmin()||!db){status("courseAdminStatus","Administrator access and Firebase are required.");return;}
+ const title=$("newTitle").value.trim(),id=title.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+Date.now().toString(36);
  try{
-  await db.collection("courses").doc(id).set({title,description,category:$("newCategory").value,icon:$("newIcon").value.trim()||"📘",points:$("newPoints").value.split(";").map(x=>x.trim()).filter(Boolean),createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:currentUser.uid});
-  setStatus("courseAdminStatus","Course added to the shared course library.",true);$("addCourseForm").reset();await loadSharedCourses();await loadAdmin();
- }catch(err){setStatus("courseAdminStatus","Course could not be added: "+err.message);}
+  await db.collection("courses").doc(id).set({
+   title,description:$("newDescription").value.trim(),category:$("newCategory").value,
+   icon:$("newIcon").value.trim()||"📘",
+   points:$("newPoints").value.split(";").map(x=>x.trim()).filter(Boolean),
+   createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  status("courseAdminStatus","Course added.",true);$("addCourseForm").reset();
+  await loadSharedCourses();await loadAdmin();
+ }catch(e){status("courseAdminStatus","Could not add course. Check Firebase rules.");}
 });
+
 document.addEventListener("click",async e=>{
  const d=e.target.closest("[data-decision]");
- if(d){
-  if(!isAdmin()||!db)return;
-  try{await db.collection("applications").doc(d.dataset.decision).update({status:d.dataset.value,reviewedAt:firebase.firestore.FieldValue.serverTimestamp(),reviewedBy:currentUser.uid});await loadAdmin();}
-  catch(err){alert("Could not update application. Check database rules: "+err.message);}
+ if(d&&isAdmin()&&db){
+  try{await db.collection("applications").doc(d.dataset.decision).update({status:d.dataset.value,reviewedAt:firebase.firestore.FieldValue.serverTimestamp()});await loadAdmin();}
+  catch(e){alert("Could not update the application. Check Firebase rules.");}
  }
- const del=e.target.closest("[data-delete-course]");
- if(del){
-  if(!isAdmin()||!db)return;
-  if(!confirm("Delete this course from the shared library?"))return;
-  try{await db.collection("courses").doc(del.dataset.deleteCourse).delete();await loadSharedCourses();await loadAdmin();}
-  catch(err){alert("Could not delete course: "+err.message);}
+ const del=e.target.closest("[data-delete]");
+ if(del&&isAdmin()&&db&&confirm("Delete this course?")){
+  try{await db.collection("courses").doc(del.dataset.delete).delete();await loadSharedCourses();await loadAdmin();}
+  catch(e){alert("Could not delete course. Check Firebase rules.");}
  }
 });
 
-/* Record a page visit event, when database and user session are available. */
-if(firebaseConfigured){
- setTimeout(async()=>{
-  if(db)try{await db.collection("activityEvents").add({type:"visit",uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
- },1800);
-}
-
-/* Initial setup */
 $("year").textContent=new Date().getFullYear();
 renderCourses();renderQuiz();
+
+if(firebaseReady){
+ setTimeout(()=>{if(db)recordEvent("visit");},1500);
+}
 if(location.hash==="#admin"){
- if(auth&&auth.currentUser)showPage("admin");
- else showPage("login");
-}else if(pageNames.includes(location.hash.slice(1)))showPage(location.hash.slice(1));
+ if(firebaseReady)showPage("login");
+ else showPage("home");
+}else if(pages.includes(location.hash.slice(1)))showPage(location.hash.slice(1));
 </script>
 </body>
 </html>
-
-rules_version = '2';
-
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    function signedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return signedIn()
-        && request.auth.token.email == "gisamanav@gmail.com";
-    }
-
-    match /users/{userId} {
-      allow create: if signedIn() && request.auth.uid == userId;
-      allow read: if signedIn()
-        && (request.auth.uid == userId || isAdmin());
-      allow update: if signedIn()
-        && (request.auth.uid == userId || isAdmin());
-      allow delete: if isAdmin();
-    }
-
-    match /courses/{courseId} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
-
-    match /applications/{applicationId} {
-      allow create: if signedIn()
-        && request.resource.data.uid == request.auth.uid
-        && request.resource.data.status == "pending";
-
-      allow read: if signedIn()
-        && (resource.data.uid == request.auth.uid || isAdmin());
-
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    match /activityEvents/{eventId} {
-      allow create: if request.resource.data.type in [
-        "visit", "login", "logout"
-      ];
-
-      allow read: if isAdmin();
-      allow update, delete: if isAdmin();
-    }
-  }
-}
